@@ -132,7 +132,7 @@ let gameState = {
   gameStarted: false,
   tokens: {},
   diceRoll: null,
-  selectableTokens: [],
+  ableTokens: [],
   winner: null
 };
 let myPlayerId;
@@ -256,13 +256,13 @@ function renderPlayerSetup() {
       </label>
       <input type="file" id="avatar-${index}" accept="image/*" onchange="handleAvatarUpload(${index}, event)">
       <input type="text" value="${player.name}" onchange="updatePlayerName(${index}, this.value)" placeholder="Player Name">
-      <select class="color-select" onchange="updatePlayerColor(${index}, this.value)">
+      < class="color-" onchange="updatePlayerColor(${index}, this.value)">
         ${availableColors.map(c => `
-          <option value="${c}" ${c === player.color ? 'selected' : ''} style="background: ${getColorHex(c)}; color: white;">
+          <option value="${c}" ${c === player.color ? 'ed' : ''} style="background: ${getColorHex(c)}; color: white;">
             ${c.toUpperCase()}
           </option>
         `).join('')}
-      </select>
+      </>
       <button class="btn-remove" onclick="removePlayer(${index})">✕</button>
     `;
     
@@ -429,7 +429,7 @@ function joinAsPlayer(code) {
       case 'gameState':
         gameState = data.state;
         if (!gameState.gameStarted) {
-          showPlayerSelection();
+          showPlayerion();
         } else {
           // Game already started, check if we're in it
           const myPlayer = gameState.players.find(p => p.playerId === myPlayerId);
@@ -513,21 +513,25 @@ function joinAsPlayer(code) {
     });
   }
   
-  function selectPlayer(index) {
-    const card = document.querySelectorAll('.player-card')[index];
-    card.classList.add('selected');
-    
-    myPlayerIndex = index;
-    
-    broadcast({
-      type: 'playerSelected',
-      playerIndex: index,
-      playerId: myPlayerId
-    });
-    
-    // Wait for game to start
-    document.querySelector('.info').textContent = `You are ${gameState.players[index].name}. Waiting for game to start...`;
-  }
+function selectPlayer(index) {
+  const card = document.querySelectorAll('.player-card')[index];
+  card.classList.add('selected');
+  
+  myPlayerIndex = index;
+  
+  broadcast({
+    type: 'playerSelected',
+    playerIndex: index,
+    playerId: myPlayerId
+  });
+  
+  // Disable all cards
+  document.querySelectorAll('.player-card').forEach(c => {
+    c.style.pointerEvents = 'none';
+  });
+  
+  document.querySelector('.info').textContent = `You are ${gameState.players[index].name}. Waiting for game to start...`;
+}
   
   function broadcastGameState() {
     broadcast({
@@ -584,17 +588,31 @@ function joinAsPlayer(code) {
   }
   
   function startGamePlay() {
-    showScreen('gameScreen');
+  showScreen('gameScreen');
+  
+  // Find my player index if not set
+  if (myPlayerIndex === null) {
+    const myPlayer = gameState.players.find(p => p.playerId === myPlayerId);
+    if (myPlayer) {
+      myPlayerIndex = gameState.players.indexOf(myPlayer);
+    }
+  }
+  
+  if (myPlayerIndex !== null) {
     document.getElementById('gameInfo').textContent = `Playing as: ${gameState.players[myPlayerIndex].name}`;
-    renderBoard();
-    updateTurnDisplay();
-    updatePlayersInfo();
-    
+  }
+  
+  renderBoard();
+  updateTurnDisplay();
+  updatePlayersInfo();
+  
+  if (myPlayerIndex !== null) {
     const myColor = gameState.players[myPlayerIndex].color;
     if (gameState.currentTurn === myColor) {
       enableDiceRoll();
     }
   }
+}
   
   // Game Logic (same as before)
   function rollDice() {
