@@ -3,57 +3,52 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Family Ludo - Online Multiplayer</title>
+  <title>Family Ludo</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
 <div class="container">
-  <!-- Lobby Screen -->
-  <div id="lobby" class="screen active">
-    <h1>🎲 Family Ludo</h1>
-    <div class="lobby-content">
-      <button id="createGame" class="btn-primary">Create New Game</button>
-      <div class="or">OR</div>
-      <input type="text" id="gameCode" placeholder="Enter Game Code" />
-      <button id="joinGame" class="btn-secondary">Join Game</button>
-    </div>
-    <div id="shareSection" class="share-section hidden">
-      <p>Share this link with your family:</p>
-      <div class="share-box">
-        <input type="text" id="shareLink" readonly />
-        <button id="copyLink">📋 Copy</button>
+  <!-- Admin Setup Screen -->
+  <div id="adminSetup" class="screen active">
+    <h1>🎲 Family Ludo - Admin Setup</h1>
+    <div class="admin-content">
+      <div class="password-section">
+        <label>Admin Password:</label>
+        <input type="password" id="adminPassword" placeholder="Enter password" />
       </div>
-      <button id="whatsappShare" class="btn-whatsapp">Share on WhatsApp</button>
+      
+      <div id="playerSetupSection" class="hidden">
+        <h3>Setup Players (2-4)</h3>
+        <div id="playersSetupList"></div>
+        <button id="addPlayer" class="btn-secondary">+ Add Player</button>
+        
+        <div class="share-section" style="margin-top: 30px;">
+          <h3>Game Link:</h3>
+          <div class="share-box">
+            <input type="text" id="shareLink" readonly />
+            <button id="copyLink">📋 Copy</button>
+          </div>
+          <button id="whatsappShare" class="btn-whatsapp">Share on WhatsApp</button>
+        </div>
+        
+        <button id="startGameAdmin" class="btn-primary" disabled>Start Game</button>
+      </div>
     </div>
   </div>
 
-  <!-- Player Setup Screen -->
-  <div id="setup" class="screen">
-    <h2>Game Setup</h2>
-    <div class="setup-content">
-      <div class="player-setup">
-        <label>Your Name:</label>
-        <input type="text" id="playerName" placeholder="Enter your name" maxlength="15" />
-      </div>
-      <div class="player-setup">
-        <label>Choose Color:</label>
-        <div class="color-selection" id="colorSelection"></div>
-      </div>
-      <div class="players-waiting" id="playersWaiting">
-        <h3>Players in Game:</h3>
-        <div id="playersList"></div>
-      </div>
-      <button id="startGame" class="btn-primary" disabled>Start Game</button>
-      <p class="info">Waiting for 2-4 players...</p>
-    </div>
+  <!-- Player Selection Screen -->
+  <div id="playerSelect" class="screen">
+    <h1>🎲 Select Your Player</h1>
+    <div class="player-selection" id="playerSelection"></div>
+    <p class="info">Waiting for admin to start game...</p>
   </div>
 
   <!-- Game Screen -->
   <div id="gameScreen" class="screen">
     <div class="game-header">
       <div id="currentTurn" class="turn-indicator">Waiting...</div>
-      <div id="gameCode-display" class="game-code"></div>
+      <div id="gameInfo" class="game-code"></div>
     </div>
 
     <div class="game-container">
@@ -128,7 +123,7 @@
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.2/dist/peerjs.min.js"></script>
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <script src="game.js"></script>
 </body>
 </html>
