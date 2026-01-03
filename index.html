@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Family Ludo - Online Multiplayer</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="container">
+  <!-- Lobby Screen -->
+  <div id="lobby" class="screen active">
+    <h1>🎲 Family Ludo</h1>
+    <div class="lobby-content">
+      <button id="createGame" class="btn-primary">Create New Game</button>
+      <div class="or">OR</div>
+      <input type="text" id="gameCode" placeholder="Enter Game Code" />
+      <button id="joinGame" class="btn-secondary">Join Game</button>
+    </div>
+    <div id="shareSection" class="share-section hidden">
+      <p>Share this link with your family:</p>
+      <div class="share-box">
+        <input type="text" id="shareLink" readonly />
+        <button id="copyLink">📋 Copy</button>
+      </div>
+      <button id="whatsappShare" class="btn-whatsapp">Share on WhatsApp</button>
+    </div>
+  </div>
+
+  <!-- Player Setup Screen -->
+  <div id="setup" class="screen">
+    <h2>Game Setup</h2>
+    <div class="setup-content">
+      <div class="player-setup">
+        <label>Your Name:</label>
+        <input type="text" id="playerName" placeholder="Enter your name" maxlength="15" />
+      </div>
+      <div class="player-setup">
+        <label>Choose Color:</label>
+        <div class="color-selection" id="colorSelection"></div>
+      </div>
+      <div class="players-waiting" id="playersWaiting">
+        <h3>Players in Game:</h3>
+        <div id="playersList"></div>
+      </div>
+      <button id="startGame" class="btn-primary" disabled>Start Game</button>
+      <p class="info">Waiting for 2-4 players...</p>
+    </div>
+  </div>
+
+  <!-- Game Screen -->
+  <div id="gameScreen" class="screen">
+    <div class="game-header">
+      <div id="currentTurn" class="turn-indicator">Waiting...</div>
+      <div id="gameCode-display" class="game-code"></div>
+    </div>
+
+    <div class="game-container">
+      <div class="ludo-board" id="ludoBoard">
+        <!-- Red Home -->
+        <div class="home-area red-home">
+          <div class="home-tokens" data-color="red">
+            <div class="home-token" data-token="0"></div>
+            <div class="home-token" data-token="1"></div>
+            <div class="home-token" data-token="2"></div>
+            <div class="home-token" data-token="3"></div>
+          </div>
+        </div>
+
+        <!-- Green Home -->
+        <div class="home-area green-home">
+          <div class="home-tokens" data-color="green">
+            <div class="home-token" data-token="0"></div>
+            <div class="home-token" data-token="1"></div>
+            <div class="home-token" data-token="2"></div>
+            <div class="home-token" data-token="3"></div>
+          </div>
+        </div>
+
+        <!-- Yellow Home -->
+        <div class="home-area yellow-home">
+          <div class="home-tokens" data-color="yellow">
+            <div class="home-token" data-token="0"></div>
+            <div class="home-token" data-token="1"></div>
+            <div class="home-token" data-token="2"></div>
+            <div class="home-token" data-token="3"></div>
+          </div>
+        </div>
+
+        <!-- Blue Home -->
+        <div class="home-area blue-home">
+          <div class="home-tokens" data-color="blue">
+            <div class="home-token" data-token="0"></div>
+            <div class="home-token" data-token="1"></div>
+            <div class="home-token" data-token="2"></div>
+            <div class="home-token" data-token="3"></div>
+          </div>
+        </div>
+
+        <!-- Path Cells -->
+        <div class="path-container" id="pathContainer"></div>
+
+        <!-- Center Victory Area -->
+        <div class="center-area">
+          <div class="victory-triangle red-victory"></div>
+          <div class="victory-triangle green-victory"></div>
+          <div class="victory-triangle yellow-victory"></div>
+          <div class="victory-triangle blue-victory"></div>
+        </div>
+      </div>
+
+      <div class="game-controls">
+        <div class="dice-container">
+          <div id="diceDisplay" class="dice">🎲</div>
+          <button id="rollDice" class="btn-roll" disabled>Roll Dice</button>
+        </div>
+        <div class="players-info" id="playersInfo"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Winner Screen -->
+  <div id="winnerScreen" class="screen">
+    <h1>🏆 Game Over!</h1>
+    <div id="winnerInfo"></div>
+    <button id="newGame" class="btn-primary">New Game</button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.2/dist/peerjs.min.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
