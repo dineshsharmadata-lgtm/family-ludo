@@ -1,7 +1,7 @@
 // Game Configuration
 const COLORS = ['red', 'green', 'yellow', 'blue'];
 const TOKENS_PER_PLAYER = 4;
-const ADMIN_PASSWORD = "sharmas2026"; // Change this!
+const ADMIN_PASSWORD = "family2024"; // Change this!
 
 // Path positions (same as before)
 const PATH_POSITIONS = [
