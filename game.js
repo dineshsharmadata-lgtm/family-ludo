@@ -168,11 +168,25 @@ function checkAdminPassword() {
 }
 
 function initializeAdmin() {
-  peer = new Peer();
+  // Use a public PeerJS server with custom config
+  peer = new Peer(undefined, {
+    host: '0.peerjs.com',
+    port: 443,
+    path: '/',
+    secure: true,
+    config: {
+      iceServers: [
+        { urls: 'stun:stun.l.google.com:19302' },
+        { urls: 'stun:global.stun.twilio.com:3478' }
+      ]
+    }
+  });
   
   peer.on('open', (id) => {
     myPlayerId = id;
     gameCode = id;
+    
+    console.log('Peer connected! ID:', id); // Debug
     
     const shareLink = `${window.location.origin}${window.location.pathname}?game=${gameCode}`;
     document.getElementById('shareLink').value = shareLink;
@@ -184,7 +198,13 @@ function initializeAdmin() {
   });
   
   peer.on('connection', (conn) => {
+    console.log('New connection received'); // Debug
     setupConnection(conn);
+  });
+  
+  peer.on('error', (err) => {
+    console.error('PeerJS Error:', err);
+    alert('Connection error: ' + err.type + '. Try refreshing the page.');
   });
 }
 
@@ -344,17 +364,35 @@ window.updatePlayerName = function(index, name) {
     }
   }
   
-  function joinAsPlayer(code) {
-    peer = new Peer();
+function joinAsPlayer(code) {
+  peer = new Peer(undefined, {
+    host: '0.peerjs.com',
+    port: 443,
+    path: '/',
+    secure: true,
+    config: {
+      iceServers: [
+        { urls: 'stun:stun.l.google.com:19302' },
+        { urls: 'stun:global.stun.twilio.com:3478' }
+      ]
+    }
+  });
+  
+  peer.on('open', (id) => {
+    myPlayerId = id;
+    gameCode = code;
     
-    peer.on('open', (id) => {
-      myPlayerId = id;
-      gameCode = code;
-      
-      const conn = peer.connect(code);
-      setupConnection(conn);
-    });
-  }
+    console.log('Connecting to:', code); // Debug
+    
+    const conn = peer.connect(code);
+    setupConnection(conn);
+  });
+  
+  peer.on('error', (err) => {
+    console.error('PeerJS Error:', err);
+    alert('Could not connect: ' + err.type);
+  });
+}
   
   function setupConnection(conn) {
     conn.on('open', () => {
