@@ -1,127 +1,113 @@
 // Game Configuration
 const COLORS = ['red', 'green', 'yellow', 'blue'];
 const TOKENS_PER_PLAYER = 4;
-const ADMIN_PASSWORD = "family2024"; // Change this!
+const ADMIN_PASSWORD = "sharmas2026"; // Change this!
 
 // Path positions (same as before)
 const PATH_POSITIONS = [
-    // Red starting position (bottom-left going up) - Column 1
-    { x: 6.67, y: 60 },    // 0 - RED START
-    { x: 6.67, y: 53.33 },
-    { x: 6.67, y: 46.67 },
-    { x: 6.67, y: 40 },
-    { x: 6.67, y: 33.33 },
-    { x: 6.67, y: 26.67 },
-    
-    // Turn corner (going left)
-    { x: 0, y: 26.67 },     // 6
-    { x: 0, y: 20 },        // 7
-    
-    // Top-left corner (going up then right)
-    { x: 0, y: 13.33 },     // 8
-    { x: 0, y: 6.67 },
-    { x: 0, y: 0 },
-    { x: 6.67, y: 0 },
-    { x: 13.33, y: 0 },
-    
-    // Yellow starting position (top going right) - Row 1
-    { x: 20, y: 0 },        // 13 - YELLOW START
-    { x: 26.67, y: 0 },
-    { x: 33.33, y: 0 },
-    { x: 40, y: 0 },
-    { x: 46.67, y: 0 },
-    { x: 53.33, y: 0 },
-    
-    // Turn corner (going down)
-    { x: 60, y: 0 },        // 19
-    { x: 60, y: 6.67 },     // 20
-    
-    // Top-right corner (going right then down)
-    { x: 60, y: 13.33 },    // 21
-    { x: 60, y: 20 },
-    { x: 60, y: 26.67 },
-    { x: 60, y: 33.33 },
-    { x: 60, y: 40 },
-    
-    // Green starting position (right side going down) - Column 9
-    { x: 60, y: 46.67 },    // 26 - GREEN START
-    { x: 60, y: 53.33 },
-    { x: 60, y: 60 },
-    { x: 60, y: 66.67 },
-    { x: 60, y: 73.33 },
-    { x: 60, y: 80 },
-    
-    // Turn corner (going left)
-    { x: 60, y: 86.67 },    // 32
-    { x: 53.33, y: 86.67 }, // 33
-    
-    // Bottom-right corner (going down then left)
-    { x: 46.67, y: 86.67 }, // 34
-    { x: 40, y: 86.67 },
-    { x: 33.33, y: 86.67 },
-    { x: 26.67, y: 86.67 },
-    { x: 20, y: 86.67 },
-    
-    // Blue starting position (bottom going left) - Row 13
-    { x: 13.33, y: 86.67 }, // 39 - BLUE START
-    { x: 13.33, y: 80 },
-    { x: 13.33, y: 73.33 },
-    { x: 13.33, y: 66.67 },
-    { x: 13.33, y: 60 },
-    { x: 13.33, y: 53.33 },
-    
-    // Turn corner (going up)
-    { x: 13.33, y: 46.67 }, // 45
-    { x: 13.33, y: 40 },    // 46
-    
-    // Bottom-left corner (going left then up)
-    { x: 13.33, y: 33.33 }, // 47
-    { x: 13.33, y: 26.67 },
-    { x: 13.33, y: 20 },
-    { x: 13.33, y: 13.33 },
-    { x: 13.33, y: 6.67 }   // 51
-  ];
+  // RED path (starts bottom-left, goes up)
+  { x: 6.67, y: 60 },     // 0 - RED START
+  { x: 6.67, y: 53.33 },  // 1
+  { x: 6.67, y: 46.67 },  // 2
+  { x: 6.67, y: 40 },     // 3
+  { x: 6.67, y: 33.33 },  // 4
+  { x: 6.67, y: 26.67 },  // 5
+  { x: 0, y: 26.67 },     // 6 - corner
+  { x: 0, y: 20 },        // 7
+  { x: 0, y: 13.33 },     // 8 - SAFE
   
-  const HOME_STRETCH = {
-    red: [
-      { x: 20, y: 60 },
-      { x: 26.67, y: 60 },
-      { x: 33.33, y: 60 },
-      { x: 40, y: 60 },
-      { x: 46.67, y: 60 }
-    ],
-    yellow: [
-      { x: 26.67, y: 6.67 },
-      { x: 26.67, y: 13.33 },
-      { x: 26.67, y: 20 },
-      { x: 26.67, y: 26.67 },
-      { x: 26.67, y: 33.33 }
-    ],
-    green: [
-      { x: 53.33, y: 46.67 },
-      { x: 46.67, y: 46.67 },
-      { x: 40, y: 46.67 },
-      { x: 33.33, y: 46.67 },
-      { x: 26.67, y: 46.67 }
-    ],
-    blue: [
-      { x: 33.33, y: 80 },
-      { x: 33.33, y: 73.33 },
-      { x: 33.33, y: 66.67 },
-      { x: 33.33, y: 60 },
-      { x: 33.33, y: 53.33 }
-    ]
-  };
+  // YELLOW path (goes right along top)
+  { x: 0, y: 6.67 },      // 9
+  { x: 0, y: 0 },         // 10
+  { x: 6.67, y: 0 },      // 11
+  { x: 13.33, y: 0 },     // 12
+  { x: 20, y: 0 },        // 13 - YELLOW START
+  { x: 26.67, y: 0 },     // 14
+  { x: 33.33, y: 0 },     // 15
+  { x: 40, y: 0 },        // 16
+  { x: 46.67, y: 0 },     // 17
+  { x: 53.33, y: 0 },     // 18
+  { x: 60, y: 0 },        // 19 - corner
+  { x: 60, y: 6.67 },     // 20
+  { x: 60, y: 13.33 },    // 21 - SAFE
   
-  const START_POSITIONS = {
-    red: 0,
-    yellow: 13,
-    green: 26,
-    blue: 39
-  };
+  // GREEN path (goes down on right)
+  { x: 60, y: 20 },       // 22
+  { x: 60, y: 26.67 },    // 23
+  { x: 60, y: 33.33 },    // 24
+  { x: 60, y: 40 },       // 25
+  { x: 60, y: 46.67 },    // 26 - GREEN START
+  { x: 60, y: 53.33 },    // 27
+  { x: 60, y: 60 },       // 28
+  { x: 60, y: 66.67 },    // 29
+  { x: 60, y: 73.33 },    // 30
+  { x: 60, y: 80 },       // 31
+  { x: 60, y: 86.67 },    // 32 - corner
+  { x: 53.33, y: 86.67 }, // 33
+  { x: 46.67, y: 86.67 }, // 34 - SAFE
   
-  const SAFE_SPOTS = [0, 8, 13, 21, 26, 34, 39, 47];
-  const STAR_SPOTS = [5, 18, 31, 44];
+  // BLUE path (goes left along bottom)
+  { x: 40, y: 86.67 },    // 35
+  { x: 33.33, y: 86.67 }, // 36
+  { x: 26.67, y: 86.67 }, // 37
+  { x: 20, y: 86.67 },    // 38
+  { x: 13.33, y: 86.67 }, // 39 - BLUE START
+  { x: 13.33, y: 80 },    // 40
+  { x: 13.33, y: 73.33 }, // 41
+  { x: 13.33, y: 66.67 }, // 42
+  { x: 13.33, y: 60 },    // 43
+  { x: 13.33, y: 53.33 }, // 44
+  { x: 13.33, y: 46.67 }, // 45 - corner
+  { x: 13.33, y: 40 },    // 46
+  { x: 13.33, y: 33.33 }, // 47 - SAFE
+  
+  // Back to RED (completes circle)
+  { x: 13.33, y: 26.67 }, // 48
+  { x: 13.33, y: 20 },    // 49
+  { x: 13.33, y: 13.33 }, // 50
+  { x: 13.33, y: 6.67 }   // 51
+];
+
+const HOME_STRETCH = {
+  red: [
+    { x: 20, y: 60 },      // 0
+    { x: 26.67, y: 60 },   // 1
+    { x: 33.33, y: 60 },   // 2
+    { x: 40, y: 60 },      // 3
+    { x: 46.67, y: 60 }    // 4
+  ],
+  yellow: [
+    { x: 26.67, y: 6.67 },   // 0
+    { x: 26.67, y: 13.33 },  // 1
+    { x: 26.67, y: 20 },     // 2
+    { x: 26.67, y: 26.67 },  // 3
+    { x: 26.67, y: 33.33 }   // 4
+  ],
+  green: [
+    { x: 53.33, y: 46.67 },  // 0
+    { x: 46.67, y: 46.67 },  // 1
+    { x: 40, y: 46.67 },     // 2
+    { x: 33.33, y: 46.67 },  // 3
+    { x: 26.67, y: 46.67 }   // 4
+  ],
+  blue: [
+    { x: 33.33, y: 80 },     // 0
+    { x: 33.33, y: 73.33 },  // 1
+    { x: 33.33, y: 66.67 },  // 2
+    { x: 33.33, y: 60 },     // 3
+    { x: 33.33, y: 53.33 }   // 4
+  ]
+};
+
+const START_POSITIONS = {
+  red: 0,
+  yellow: 13,
+  green: 26,
+  blue: 39
+};
+
+const SAFE_SPOTS = [0, 8, 13, 21, 26, 34, 39, 47];
+const STAR_SPOTS = [5, 18, 31, 44];
 
 // Game State
 let peer;
