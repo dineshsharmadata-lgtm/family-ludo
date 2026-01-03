@@ -171,6 +171,7 @@ function createGame() {
     document.getElementById('shareSection').classList.remove('hidden');
     
     showScreen('setup');
+    document.getElementById('gameCode-display').textContent = `Game Code: ${gameCode}`;
   });
   
   peer.on('connection', (conn) => {
