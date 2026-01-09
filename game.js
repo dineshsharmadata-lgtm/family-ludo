@@ -415,7 +415,7 @@ function joinAsPlayer(code) {
       case 'gameState':
         gameState = data.state;
         if (!gameState.gameStarted) {
-          showPlayerion();
+          showPlayerSelection();
         } else {
           // Game already started, check if we're in it
           const myPlayer = gameState.players.find(p => p.playerId === myPlayerId);
