@@ -546,12 +546,23 @@ function handleMessage(data, conn) {
       startGamePlay();
       break;
 
-    case "diceRolled":
-      gameState.diceRoll = data.roll;
-      gameState.selectableTokens = data.selectableTokens;
-      updateDiceDisplay(data.roll);
-      highlightSelectableTokens();
-      break;
+   case "diceRolled":
+     gameState.diceRoll = data.roll;
+     gameState.selectableTokens = data.selectableTokens;
+     updateDiceDisplay(data.roll);
+     
+     // Only highlight tokens if it's MY turn
+     if (myPlayerIndex !== null) {
+       const myColor = gameState.players[myPlayerIndex]?.color;
+       if (myColor && gameState.currentTurn === myColor) {
+         highlightSelectableTokens();
+       } else {
+         // Not my turn, disable dice and clear any highlights
+         clearSelectableTokens();
+         disableDiceRoll();
+       }
+     }
+     break;
 
     case "tokenMoved":
       gameState = data.state;
@@ -559,13 +570,26 @@ function handleMessage(data, conn) {
       updatePlayersInfo();
       break;
 
-    case "turnChanged":
-      gameState.currentTurn = data.turn;
-      gameState.selectableTokens = [];
-      updateTurnDisplay();
-      updatePlayersInfo();
-      clearSelectableTokens();
-      break;
+   case "turnChanged":
+     gameState.currentTurn = data.turn;
+     gameState.selectableTokens = [];
+     gameState.diceRoll = null;
+     
+     clearSelectableTokens();
+     updateTurnDisplay();
+     updatePlayersInfo();
+     renderBoard();
+     
+     // Enable dice only if it's MY turn
+     if (myPlayerIndex !== null) {
+       const myColor = gameState.players[myPlayerIndex]?.color;
+       if (myColor && gameState.currentTurn === myColor) {
+         enableDiceRoll();
+       } else {
+         disableDiceRoll();
+       }
+     }
+     break;
 
     case "gameOver":
       gameState.winner = data.winner;
@@ -732,6 +756,8 @@ function startGamePlay() {
  * We only allow rolling when it's your turn.
  */
 function rollDice() {
+  if (myPlayerIndex === null) return;
+  
   const myColor = gameState.players[myPlayerIndex].color;
   if (gameState.currentTurn !== myColor) return;
 
@@ -747,6 +773,7 @@ function rollDice() {
   const selectableTokens = getSelectableTokens(myColor, roll);
   gameState.selectableTokens = selectableTokens;
 
+  // Broadcast to ALL players (including myself)
   broadcast({ type: "diceRolled", roll, selectableTokens });
 
   // If no moves possible, auto-advance turn after a short pause
@@ -754,6 +781,28 @@ function rollDice() {
     setTimeout(() => nextTurn(), 1500);
   } else {
     highlightSelectableTokens();
+  }
+}
+
+function nextTurn() {
+  const currentIndex = gameState.players.findIndex((p) => p.color === gameState.currentTurn);
+  const nextIndex = (currentIndex + 1) % gameState.players.length;
+  gameState.currentTurn = gameState.players[nextIndex].color;
+
+  broadcast({ type: "turnChanged", turn: gameState.currentTurn });
+
+  updateTurnDisplay();
+  updatePlayersInfo();
+  clearSelectableTokens();
+
+  // Enable dice only if it's MY turn
+  if (myPlayerIndex !== null) {
+    const myColor = gameState.players[myPlayerIndex]?.color;
+    if (gameState.currentTurn === myColor) {
+      enableDiceRoll();
+    } else {
+      disableDiceRoll();
+    }
   }
 }
 
@@ -789,13 +838,29 @@ function getSelectableTokens(color, roll) {
  * Visually highlight the tokens the player can click.
  * We attach click handlers to move the selected token.
  */
+/**
+ * Visually highlight the tokens the player can click.
+ * We attach click handlers to move the selected token.
+ */
 function highlightSelectableTokens() {
-  clearSelectableTokens();
+  // If I haven't selected a player slot yet, do nothing
+  if (myPlayerIndex === null || !gameState.players?.[myPlayerIndex]) {
+    return;
+  }
 
   const myColor = gameState.players[myPlayerIndex].color;
+  if (!myColor) return;
 
-  gameState.selectableTokens.forEach((tokenId) => {
-    const token = gameState.tokens[myColor][tokenId];
+  clearSelectableTokens();
+
+  // Only highlight if it's MY turn
+  if (gameState.currentTurn !== myColor) {
+    return;
+  }
+
+  (gameState.selectableTokens || []).forEach((tokenId) => {
+    const token = gameState.tokens?.[myColor]?.[tokenId];
+    if (!token) return;
 
     // Token still in home area
     if (token.position === -1) {
