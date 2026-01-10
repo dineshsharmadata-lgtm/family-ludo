@@ -556,11 +556,14 @@ function handleMessage(data, conn) {
       break;
 
    case "diceRolled":
-     if (isAdmin) broadcast(data);   // relay
      gameState.diceRoll = data.roll;
      gameState.selectableTokens = data.selectableTokens;
      updateDiceDisplay(data.roll);
-     highlightSelectableTokens();
+   
+     if (myPlayerIndex !== null) {
+       const myColor = gameState.players[myPlayerIndex]?.color;
+       if (myColor && gameState.currentTurn === myColor) highlightSelectableTokens();
+     }
      break;
    
    case "tokenMoved":
@@ -805,6 +808,7 @@ function getSelectableTokens(color, roll) {
  * We attach click handlers to move the selected token.
  */
 function highlightSelectableTokens() {
+   if (myPlayerIndex === null || !gameState.players[myPlayerIndex]) return;
   clearSelectableTokens();
 
   const myColor = gameState.players[myPlayerIndex].color;
