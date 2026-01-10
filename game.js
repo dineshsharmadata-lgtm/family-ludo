@@ -691,12 +691,13 @@ function showScreen(screenId) {
 function createPathCells() {
   const pathContainer = document.getElementById("pathContainer");
 
-  // Main loop (52 cells)
   PATH_POSITIONS.forEach((pos, index) => {
     const cell = document.createElement("div");
     cell.className = "path-cell";
-    cell.style.left = pos.x + "%";
-    cell.style.top = pos.y + "%";
+
+    cell.style.gridColumnStart = pos.col;
+    cell.style.gridRowStart = pos.row;
+
     cell.dataset.position = index;
 
     if (SAFE_SPOTS.includes(index)) cell.classList.add("safe");
@@ -709,19 +710,22 @@ function createPathCells() {
     pathContainer.appendChild(cell);
   });
 
-  // Home stretch cells (per color)
   Object.keys(HOME_STRETCH).forEach((color) => {
     HOME_STRETCH[color].forEach((pos, index) => {
       const cell = document.createElement("div");
       cell.className = `path-cell home-stretch-${color}`;
-      cell.style.left = pos.x + "%";
-      cell.style.top = pos.y + "%";
+
+      cell.style.gridColumnStart = pos.col;
+      cell.style.gridRowStart = pos.row;
+
       cell.dataset.homeStretch = color;
       cell.dataset.homePosition = index;
+
       pathContainer.appendChild(cell);
     });
   });
 }
+
 
 /* ---------------------------------------------------------------------------
    10) START GAME UI (board + turn state)
