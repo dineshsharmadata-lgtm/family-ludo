@@ -31,91 +31,115 @@ const ADMIN_PASSWORD = "family2024";
  * Board positions 0..51 are the main loop around the board.
  * Each entry is an (x,y) in percentage so we can absolutely-position cells.
  */
-// Grid-based path positions (15x15 grid) - Plus sign pattern
 const PATH_POSITIONS = [
-  // RED path (starts at left middle, goes up)
-  { x: 6.67, y: 53.33 },   // 0 - RED START
-  { x: 13.33, y: 53.33 },  // 1
-  { x: 20, y: 53.33 },     // 2
-  { x: 26.67, y: 53.33 },  // 3
-  { x: 33.33, y: 53.33 },  // 4
-  { x: 40, y: 53.33 },     // 5
-  { x: 46.67, y: 46.67 },  // 6 - turn (SAFE)
-  { x: 46.67, y: 40 },     // 7
-  { x: 46.67, y: 33.33 },  // 8
-  { x: 46.67, y: 26.67 },  // 9
-  { x: 46.67, y: 20 },     // 10
-  { x: 46.67, y: 13.33 },  // 11
-  { x: 46.67, y: 6.67 },   // 12
-  
-  // YELLOW path (top middle, goes right)
-  { x: 53.33, y: 6.67 },   // 13 - YELLOW START
-  { x: 53.33, y: 13.33 },  // 14
-  { x: 53.33, y: 20 },     // 15
-  { x: 53.33, y: 26.67 },  // 16
-  { x: 53.33, y: 33.33 },  // 17
-  { x: 53.33, y: 40 },     // 18
-  { x: 60, y: 46.67 },     // 19 - turn (SAFE)
-  { x: 66.67, y: 46.67 },  // 20
-  { x: 73.33, y: 46.67 },  // 21
-  { x: 80, y: 46.67 },     // 22
-  { x: 86.67, y: 46.67 },  // 23
-  { x: 93.33, y: 46.67 },  // 24
-  { x: 100, y: 46.67 },    // 25
-  
-  // GREEN path (right middle, goes down)
-  { x: 100, y: 53.33 },    // 26 - GREEN START
-  { x: 93.33, y: 53.33 },  // 27
-  { x: 86.67, y: 53.33 },  // 28
-  { x: 80, y: 53.33 },     // 29
-  { x: 73.33, y: 53.33 },  // 30
-  { x: 66.67, y: 53.33 },  // 31
-  { x: 60, y: 60 },        // 32 - turn (SAFE)
-  { x: 60, y: 66.67 },     // 33
-  { x: 60, y: 73.33 },     // 34
-  { x: 60, y: 80 },        // 35
-  { x: 60, y: 86.67 },     // 36
-  { x: 60, y: 93.33 },     // 37
-  { x: 60, y: 100 },       // 38
-  
-  // BLUE path (bottom middle, goes left)
-  { x: 53.33, y: 100 },    // 39 - BLUE START
-  { x: 53.33, y: 93.33 },  // 40
-  { x: 53.33, y: 86.67 },  // 41
-  { x: 53.33, y: 80 },     // 42
-  { x: 53.33, y: 73.33 },  // 43
-  { x: 53.33, y: 66.67 },  // 44
-  { x: 46.67, y: 60 },     // 45 - turn (SAFE)
-  { x: 40, y: 60 },        // 46
-  { x: 33.33, y: 60 },     // 47
-  { x: 26.67, y: 60 },     // 48
-  { x: 20, y: 60 },        // 49
-  { x: 13.33, y: 60 },     // 50
-  { x: 6.67, y: 60 },      // 51
+  // RED path (starts bottom-left, goes up)
+  { x: 6.67, y: 60 },     // 0 - RED START
+  { x: 6.67, y: 53.33 },  // 1
+  { x: 6.67, y: 46.67 },  // 2
+  { x: 6.67, y: 40 },     // 3
+  { x: 6.67, y: 33.33 },  // 4
+  { x: 6.67, y: 26.67 },  // 5
+  { x: 0, y: 26.67 },     // 6 - corner
+  { x: 0, y: 20 },        // 7
+  { x: 0, y: 13.33 },     // 8 - SAFE
+
+  // YELLOW path (goes right along top)
+  { x: 0, y: 6.67 },      // 9
+  { x: 0, y: 0 },         // 10
+  { x: 6.67, y: 0 },      // 11
+  { x: 13.33, y: 0 },     // 12
+  { x: 20, y: 0 },        // 13 - YELLOW START
+  { x: 26.67, y: 0 },     // 14
+  { x: 33.33, y: 0 },     // 15
+  { x: 40, y: 0 },        // 16
+  { x: 46.67, y: 0 },     // 17
+  { x: 53.33, y: 0 },     // 18
+  { x: 60, y: 0 },        // 19 - corner
+  { x: 60, y: 6.67 },     // 20
+  { x: 60, y: 13.33 },    // 21 - SAFE
+
+  // GREEN path (goes down on right)
+  { x: 60, y: 20 },       // 22
+  { x: 60, y: 26.67 },    // 23
+  { x: 60, y: 33.33 },    // 24
+  { x: 60, y: 40 },       // 25
+  { x: 60, y: 46.67 },    // 26 - GREEN START
+  { x: 60, y: 53.33 },    // 27
+  { x: 60, y: 60 },       // 28
+  { x: 60, y: 66.67 },    // 29
+  { x: 60, y: 73.33 },    // 30
+  { x: 60, y: 80 },       // 31
+  { x: 60, y: 86.67 },    // 32 - corner
+  { x: 53.33, y: 86.67 }, // 33
+  { x: 46.67, y: 86.67 }, // 34 - SAFE
+
+  // BLUE path (goes left along bottom)
+  { x: 40, y: 86.67 },    // 35
+  { x: 33.33, y: 86.67 }, // 36
+  { x: 26.67, y: 86.67 }, // 37
+  { x: 20, y: 86.67 },    // 38
+  { x: 13.33, y: 86.67 }, // 39 - BLUE START
+  { x: 13.33, y: 80 },    // 40
+  { x: 13.33, y: 73.33 }, // 41
+  { x: 13.33, y: 66.67 }, // 42
+  { x: 13.33, y: 60 },    // 43
+  { x: 13.33, y: 53.33 }, // 44
+  { x: 13.33, y: 46.67 }, // 45 - corner
+  { x: 13.33, y: 40 },    // 46
+  { x: 13.33, y: 33.33 }, // 47 - SAFE
+
+  // Back to RED (completes circle)
+  { x: 13.33, y: 26.67 }, // 48
+  { x: 13.33, y: 20 },    // 49
+  { x: 13.33, y: 13.33 }, // 50
+  { x: 13.33, y: 6.67 },  // 51
 ];
 
-// Home stretch paths (leading to center)
+/**
+ * HOME_STRETCH:
+ * Each color has a "home stretch" path (the final 5 steps).
+ * In this code, when a token enters home stretch, we treat its position
+ * as an index within this array (0..5-ish).
+ */
 const HOME_STRETCH = {
   red: [
-    { x: 46.67, y: 53.33 },
-    { x: 53.33, y: 53.33 },
+    { x: 20, y: 60 },
+    { x: 26.67, y: 60 },
+    { x: 33.33, y: 60 },
+    { x: 40, y: 60 },
+    { x: 46.67, y: 60 },
   ],
   yellow: [
-    { x: 53.33, y: 46.67 },
-    { x: 53.33, y: 53.33 },
+    { x: 26.67, y: 6.67 },
+    { x: 26.67, y: 13.33 },
+    { x: 26.67, y: 20 },
+    { x: 26.67, y: 26.67 },
+    { x: 26.67, y: 33.33 },
   ],
   green: [
-    { x: 60, y: 53.33 },
-    { x: 53.33, y: 53.33 },
+    { x: 53.33, y: 46.67 },
+    { x: 46.67, y: 46.67 },
+    { x: 40, y: 46.67 },
+    { x: 33.33, y: 46.67 },
+    { x: 26.67, y: 46.67 },
   ],
   blue: [
-    { x: 53.33, y: 60 },
-    { x: 53.33, y: 53.33 },
+    { x: 33.33, y: 80 },
+    { x: 33.33, y: 73.33 },
+    { x: 33.33, y: 66.67 },
+    { x: 33.33, y: 60 },
+    { x: 33.33, y: 53.33 },
   ],
 };
 
-const STAR_SPOTS = [6, 19, 32, 45]; // The four corner turns
-const SAFE_SPOTS = [0, 6, 13, 19, 26, 32, 39, 45];
+// Each color's start index on the main path loop
+const START_POSITIONS = { red: 0, yellow: 13, green: 26, blue: 39 };
+
+// Tokens on safe spots cannot be captured
+const SAFE_SPOTS = [0, 8, 13, 21, 26, 34, 39, 47];
+
+// Stars are just special styling here (optional rule variations)
+const STAR_SPOTS = [5, 18, 31, 44];
 
 /* ---------------------------------------------------------------------------
    2) GLOBAL STATE (mutable)
@@ -483,33 +507,28 @@ function setupConnection(conn) {
  * This is like your API endpoint handler.
  */
 function handleMessage(data, conn) {
-  // Admin only RELAYS these messages to other players
-  if (
-    isAdmin &&
-    (data.type === "diceRolled" ||
-      data.type === "tokenMoved" ||
-      data.type === "turnChanged" ||
-      data.type === "gameOver")
-  ) {
-    connections.forEach((c) => {
-      if (c.open && c !== conn) c.send(data);
-    });
-  }
-
   switch (data.type) {
     case "requestGameState":
-      if (isAdmin) conn.send({ type: "gameState", state: gameState });
+      if (isAdmin) {
+        conn.send({ type: "gameState", state: gameState });
+      }
       break;
 
     case "gameState":
+      // Player receives current setup/state from admin
       gameState = data.state;
-      if (!gameState.gameStarted) showPlayerSelection();
-      else {
+
+      if (!gameState.gameStarted) {
+        showPlayerSelection();
+      } else {
+        // If game started, see if I already joined a slot earlier
         const myPlayer = gameState.players.find((p) => p.playerId === myPlayerId);
         if (myPlayer) {
           myPlayerIndex = gameState.players.indexOf(myPlayer);
           startGamePlay();
-        } else alert("Game already started");
+        } else {
+          alert("Game already started");
+        }
       }
       break;
 
@@ -531,46 +550,26 @@ function handleMessage(data, conn) {
       startGamePlay();
       break;
 
-   case "diceRolled":
-     gameState.diceRoll = data.roll;
-     gameState.selectableTokens = data.selectableTokens;
-     updateDiceDisplay(data.roll);
-   
-     if (myPlayerIndex !== null) {
-       const myColor = gameState.players[myPlayerIndex]?.color;
-       if (myColor && gameState.currentTurn === myColor) {
-         highlightSelectableTokens();
-       } else {
-         clearSelectableTokens();
-         disableDiceRoll();
-       }
-     }
-     break;
-   
-   case "tokenMoved":
-     if (isAdmin) broadcast(data);   // relay
-     gameState = data.state;
-     renderBoard();
-     updateTurnDisplay();
-     updatePlayersInfo();
-     break;
-   
-   case "turnChanged":
-     gameState.currentTurn = data.turn;
-     gameState.selectableTokens = [];
-     gameState.diceRoll = null;
-   
-     clearSelectableTokens();
-     updateTurnDisplay();
-     updatePlayersInfo();
-     renderBoard();
-   
-     if (myPlayerIndex !== null) {
-       const myColor = gameState.players[myPlayerIndex]?.color;
-       if (myColor && gameState.currentTurn === myColor) enableDiceRoll();
-       else disableDiceRoll();
-     }
-     break;
+    case "diceRolled":
+      gameState.diceRoll = data.roll;
+      gameState.selectableTokens = data.selectableTokens;
+      updateDiceDisplay(data.roll);
+      highlightSelectableTokens();
+      break;
+
+    case "tokenMoved":
+      gameState = data.state;
+      renderBoard();
+      updatePlayersInfo();
+      break;
+
+    case "turnChanged":
+      gameState.currentTurn = data.turn;
+      gameState.selectableTokens = [];
+      updateTurnDisplay();
+      updatePlayersInfo();
+      clearSelectableTokens();
+      break;
 
     case "gameOver":
       gameState.winner = data.winner;
@@ -667,13 +666,12 @@ function showScreen(screenId) {
 function createPathCells() {
   const pathContainer = document.getElementById("pathContainer");
 
+  // Main loop (52 cells)
   PATH_POSITIONS.forEach((pos, index) => {
     const cell = document.createElement("div");
     cell.className = "path-cell";
-
-    cell.style.gridColumnStart = pos.col;
-    cell.style.gridRowStart = pos.row;
-
+    cell.style.left = pos.x + "%";
+    cell.style.top = pos.y + "%";
     cell.dataset.position = index;
 
     if (SAFE_SPOTS.includes(index)) cell.classList.add("safe");
@@ -686,22 +684,19 @@ function createPathCells() {
     pathContainer.appendChild(cell);
   });
 
+  // Home stretch cells (per color)
   Object.keys(HOME_STRETCH).forEach((color) => {
     HOME_STRETCH[color].forEach((pos, index) => {
       const cell = document.createElement("div");
       cell.className = `path-cell home-stretch-${color}`;
-
-      cell.style.gridColumnStart = pos.col;
-      cell.style.gridRowStart = pos.row;
-
+      cell.style.left = pos.x + "%";
+      cell.style.top = pos.y + "%";
       cell.dataset.homeStretch = color;
       cell.dataset.homePosition = index;
-
       pathContainer.appendChild(cell);
     });
   });
 }
-
 
 /* ---------------------------------------------------------------------------
    10) START GAME UI (board + turn state)
@@ -746,25 +741,23 @@ function rollDice() {
 
   disableDiceRoll();
 
+  // Random 1..6
   const roll = Math.floor(Math.random() * 6) + 1;
   gameState.diceRoll = roll;
 
+  updateDiceDisplay(roll);
+
+  // Decide which of my tokens are allowed to move
   const selectableTokens = getSelectableTokens(myColor, roll);
   gameState.selectableTokens = selectableTokens;
 
-  // update my own UI immediately
-  updateDiceDisplay(roll);
-  if (selectableTokens.length) highlightSelectableTokens();
+  broadcast({ type: "diceRolled", roll, selectableTokens });
 
-  // send to admin to relay to everyone
-  broadcast({
-    type: "diceRolled",
-    roll,
-    selectableTokens
-  });
-
+  // If no moves possible, auto-advance turn after a short pause
   if (selectableTokens.length === 0) {
-    setTimeout(nextTurn, 800);
+    setTimeout(() => nextTurn(), 1500);
+  } else {
+    highlightSelectableTokens();
   }
 }
 
@@ -801,21 +794,14 @@ function getSelectableTokens(color, roll) {
  * We attach click handlers to move the selected token.
  */
 function highlightSelectableTokens() {
-  // If I haven't selected a player slot yet, do nothing
-  if (myPlayerIndex === null || !gameState.players?.[myPlayerIndex]) return;
-
-  const myColor = gameState.players[myPlayerIndex].color;
-  if (!myColor) return;
-
   clearSelectableTokens();
 
-  // Only highlight if it's MY turn
-  if (gameState.currentTurn !== myColor) return;
+  const myColor = gameState.players[myPlayerIndex].color;
 
-  (gameState.selectableTokens || []).forEach((tokenId) => {
-    const token = gameState.tokens?.[myColor]?.[tokenId];
-    if (!token) return;
+  gameState.selectableTokens.forEach((tokenId) => {
+    const token = gameState.tokens[myColor][tokenId];
 
+    // Token still in home area
     if (token.position === -1) {
       const homeToken = document.querySelector(
         `.home-tokens[data-color="${myColor}"] .home-token[data-token="${tokenId}"]`
@@ -825,6 +811,7 @@ function highlightSelectableTokens() {
         homeToken.addEventListener("click", () => moveTokenFromHome(tokenId));
       }
     } else {
+      // Token already on the board
       const tokenEl = document.querySelector(`.token.${myColor}[data-token="${tokenId}"]`);
       if (tokenEl) {
         tokenEl.classList.add("selectable");
