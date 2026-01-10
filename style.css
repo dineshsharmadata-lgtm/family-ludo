@@ -267,16 +267,17 @@
   
   /* Ludo Board */
 .ludo-board {
-  position: relative;
   width: 100%;
-  aspect-ratio: 1 / 1;
+  max-width: 600px;
+  aspect-ratio: 1;
+  background: white;
+  border: 3px solid #333;
+  position: relative;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(3, 1fr);
+  grid-template-columns: 40% 20% 40%;
+  grid-template-rows: 40% 20% 40%;
   gap: 0;
-  background: #f0f0f0;
 }
-
 
 /* Home Areas */
 .home-area {
@@ -290,24 +291,24 @@
 .red-home {
   background: #ff6b6b;
   grid-column: 1;
-  grid-row: 1;
-}
-
-.yellow-home {
-  background: #ffd93d;
-  grid-column: 3;
-  grid-row: 1;
+  grid-row: 3;
 }
 
 .green-home {
   background: #51cf66;
   grid-column: 3;
-  grid-row: 3;
+  grid-row: 1;
+}
+
+.yellow-home {
+  background: #ffd93d;
+  grid-column: 1;
+  grid-row: 1;
 }
 
 .blue-home {
   background: #4dabf7;
-  grid-column: 1;
+  grid-column: 3;
   grid-row: 3;
 }
 
@@ -382,7 +383,6 @@
   pointer-events: all;
   box-sizing: border-box;
 }
-
 
 .path-cell.safe {
   background: #e3f2fd;
@@ -479,14 +479,12 @@
   align-items: center;
   justify-content: center;
   border: 2px solid #333;
-  z-index: 1;
 }
 
 .center-area::after {
   content: '🏆';
   font-size: 40px;
   position: absolute;
-  z-index: 2;
 }
 
 .victory-triangle {
