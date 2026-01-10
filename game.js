@@ -42,76 +42,72 @@ const ADMIN_PASSWORD = "family2024";
  * Positions are in percentages relative to the board container.
  */
 const PATH_POSITIONS = [
-  // RED path (left arm, going right towards center)
-  { x: 6.67, y: 40 },     // 0 - RED START (with arrow)
+  // RED path (left arm, horizontal going right)
+  { x: 6.67, y: 40 },     // 0 - RED START
   { x: 13.33, y: 40 },    // 1
   { x: 20, y: 40 },       // 2
   { x: 26.67, y: 40 },    // 3
   { x: 33.33, y: 40 },    // 4
-  { x: 40, y: 33.33 },    // 5 - turn up (SAFE with star)
+  { x: 40, y: 33.33 },    // 5 - turn (SAFE)
   
-  // Top vertical section (going up)
+  // Vertical path going up
   { x: 40, y: 26.67 },    // 6
   { x: 40, y: 20 },       // 7
   { x: 40, y: 13.33 },    // 8
   { x: 40, y: 6.67 },     // 9
   { x: 40, y: 0 },        // 10
-  { x: 46.67, y: 0 },     // 11 - corner
+  { x: 46.67, y: 0 },     // 11
   { x: 53.33, y: 0 },     // 12
   
-  // YELLOW path (top arm, going down)
-  { x: 60, y: 0 },        // 13 - YELLOW START (with arrow)
+  // YELLOW path (top arm, vertical going down)
+  { x: 60, y: 0 },        // 13 - YELLOW START
   { x: 60, y: 6.67 },     // 14
   { x: 60, y: 13.33 },    // 15
   { x: 60, y: 20 },       // 16
   { x: 60, y: 26.67 },    // 17
   { x: 60, y: 33.33 },    // 18
-  { x: 66.67, y: 40 },    // 19 - turn right (SAFE with star)
+  { x: 66.67, y: 40 },    // 19 - turn (SAFE)
   
-  // Right horizontal section (going right)
+  // Horizontal path going right
   { x: 73.33, y: 40 },    // 20
   { x: 80, y: 40 },       // 21
   { x: 86.67, y: 40 },    // 22
   { x: 93.33, y: 40 },    // 23
-  { x: 100, y: 40 },      // 24
-  { x: 100, y: 46.67 },   // 25 - corner
-  { x: 100, y: 53.33 },   // 26
+  { x: 93.33, y: 46.67 }, // 24
+  { x: 93.33, y: 53.33 }, // 25
   
-  // GREEN path (right arm, going left)
-  { x: 100, y: 60 },      // 27 - GREEN START (with arrow)
-  { x: 93.33, y: 60 },    // 28
-  { x: 86.67, y: 60 },    // 29
-  { x: 80, y: 60 },       // 30
-  { x: 73.33, y: 60 },    // 31
-  { x: 66.67, y: 60 },    // 32
-  { x: 60, y: 66.67 },    // 33 - turn down (SAFE with star)
+  // GREEN path (right arm, horizontal going left)
+  { x: 93.33, y: 60 },    // 26 - GREEN START
+  { x: 86.67, y: 60 },    // 27
+  { x: 80, y: 60 },       // 28
+  { x: 73.33, y: 60 },    // 29
+  { x: 66.67, y: 60 },    // 30
+  { x: 60, y: 66.67 },    // 31
+  { x: 60, y: 66.67 },    // 32 - turn (SAFE)
   
-  // Bottom vertical section (going down)
-  { x: 60, y: 73.33 },    // 34
-  { x: 60, y: 80 },       // 35
-  { x: 60, y: 86.67 },    // 36
-  { x: 60, y: 93.33 },    // 37
-  { x: 60, y: 100 },      // 38
-  { x: 53.33, y: 100 },   // 39 - corner
-  { x: 46.67, y: 100 },   // 40
+  // Vertical path going down
+  { x: 60, y: 73.33 },    // 33
+  { x: 60, y: 80 },       // 34
+  { x: 60, y: 86.67 },    // 35
+  { x: 60, y: 93.33 },    // 36
+  { x: 53.33, y: 93.33 }, // 37
+  { x: 46.67, y: 93.33 }, // 38
   
-  // BLUE path (bottom arm, going up)
-  { x: 40, y: 100 },      // 41 - BLUE START (with arrow)
-  { x: 40, y: 93.33 },    // 42
-  { x: 40, y: 86.67 },    // 43
-  { x: 40, y: 80 },       // 44
-  { x: 40, y: 73.33 },    // 45
-  { x: 40, y: 66.67 },    // 46
-  { x: 33.33, y: 60 },    // 47 - turn left (SAFE with star)
+  // BLUE path (bottom arm, vertical going up)
+  { x: 40, y: 93.33 },    // 39 - BLUE START  
+  { x: 40, y: 86.67 },    // 40
+  { x: 40, y: 80 },       // 41
+  { x: 40, y: 73.33 },    // 42
+  { x: 40, y: 66.67 },    // 43
+  { x: 33.33, y: 60 },    // 44 - turn (SAFE)
   
-  // Left horizontal section (going left, completing loop)
-  { x: 26.67, y: 60 },    // 48
-  { x: 20, y: 60 },       // 49
-  { x: 13.33, y: 60 },    // 50
-  { x: 6.67, y: 60 },     // 51
-  { x: 0, y: 60 },        // 52
-  { x: 0, y: 53.33 },     // 53 - corner
-  { x: 0, y: 46.67 },     // 54 - back to near red start
+  // Horizontal path going left (completing loop)
+  { x: 26.67, y: 60 },    // 45
+  { x: 20, y: 60 },       // 46
+  { x: 13.33, y: 60 },    // 47
+  { x: 6.67, y: 60 },     // 48
+  { x: 6.67, y: 53.33 },  // 49
+  { x: 6.67, y: 46.67 },  // 50 - back near red start
 ];
 
 /**
@@ -120,47 +116,26 @@ const PATH_POSITIONS = [
  */
 const HOME_STRETCH = {
   red: [
-    { x: 46.67, y: 40 },   // entry from main path
+    { x: 46.67, y: 40 },
     { x: 53.33, y: 40 },
-    { x: 60, y: 40 },
-    { x: 66.67, y: 40 },
-    { x: 73.33, y: 40 },
-    { x: 46.67, y: 46.67 }, // finish (triangle area)
   ],
   yellow: [
     { x: 60, y: 46.67 },
     { x: 60, y: 53.33 },
-    { x: 60, y: 60 },
-    { x: 60, y: 66.67 },
-    { x: 60, y: 73.33 },
-    { x: 53.33, y: 46.67 }, // finish
   ],
   green: [
     { x: 53.33, y: 60 },
     { x: 46.67, y: 60 },
-    { x: 40, y: 60 },
-    { x: 33.33, y: 60 },
-    { x: 26.67, y: 60 },
-    { x: 53.33, y: 53.33 }, // finish
   ],
   blue: [
     { x: 40, y: 53.33 },
     { x: 40, y: 46.67 },
-    { x: 40, y: 40 },
-    { x: 40, y: 33.33 },
-    { x: 40, y: 26.67 },
-    { x: 46.67, y: 53.33 }, // finish
   ],
 };
 
-// Each color's start index on the main path loop
-const START_POSITIONS = { red: 0, yellow: 13, green: 27, blue: 41 };
-
-// Tokens on safe spots cannot be captured (the star positions)
-const SAFE_SPOTS = [0, 5, 13, 19, 27, 33, 41, 47];
-
-// Stars at the turn corners
-const STAR_SPOTS = [5, 19, 33, 47];
+const START_POSITIONS = { red: 0, yellow: 13, green: 26, blue: 39 };
+const SAFE_SPOTS = [0, 5, 13, 19, 26, 32, 39, 44];
+const STAR_SPOTS = [5, 19, 32, 44];
 
 /* ---------------------------------------------------------------------------
    2) GLOBAL STATE (mutable)
