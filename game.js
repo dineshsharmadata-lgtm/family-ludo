@@ -550,26 +550,30 @@ function handleMessage(data, conn) {
       startGamePlay();
       break;
 
-    case "diceRolled":
-      gameState.diceRoll = data.roll;
-      gameState.selectableTokens = data.selectableTokens;
-      updateDiceDisplay(data.roll);
-      highlightSelectableTokens();
-      break;
-
-    case "tokenMoved":
-      gameState = data.state;
-      renderBoard();
-      updatePlayersInfo();
-      break;
-
-    case "turnChanged":
-      gameState.currentTurn = data.turn;
-      gameState.selectableTokens = [];
-      updateTurnDisplay();
-      updatePlayersInfo();
-      clearSelectableTokens();
-      break;
+   case "diceRolled":
+     if (isAdmin) broadcast(data);   // relay
+     gameState.diceRoll = data.roll;
+     gameState.selectableTokens = data.selectableTokens;
+     updateDiceDisplay(data.roll);
+     highlightSelectableTokens();
+     break;
+   
+   case "tokenMoved":
+     if (isAdmin) broadcast(data);   // relay
+     gameState = data.state;
+     renderBoard();
+     updateTurnDisplay();
+     updatePlayersInfo();
+     break;
+   
+   case "turnChanged":
+     if (isAdmin) broadcast(data);   // relay
+     gameState.currentTurn = data.turn;
+     gameState.selectableTokens = [];
+     updateTurnDisplay();
+     updatePlayersInfo();
+     clearSelectableTokens();
+     break;
 
     case "gameOver":
       gameState.winner = data.winner;
@@ -741,23 +745,25 @@ function rollDice() {
 
   disableDiceRoll();
 
-  // Random 1..6
   const roll = Math.floor(Math.random() * 6) + 1;
   gameState.diceRoll = roll;
 
-  updateDiceDisplay(roll);
-
-  // Decide which of my tokens are allowed to move
   const selectableTokens = getSelectableTokens(myColor, roll);
   gameState.selectableTokens = selectableTokens;
 
-  broadcast({ type: "diceRolled", roll, selectableTokens });
+  // update my own UI immediately
+  updateDiceDisplay(roll);
+  if (selectableTokens.length) highlightSelectableTokens();
 
-  // If no moves possible, auto-advance turn after a short pause
+  // send to admin to relay to everyone
+  broadcast({
+    type: "diceRolled",
+    roll,
+    selectableTokens
+  });
+
   if (selectableTokens.length === 0) {
-    setTimeout(() => nextTurn(), 1500);
-  } else {
-    highlightSelectableTokens();
+    setTimeout(nextTurn, 800);
   }
 }
 
