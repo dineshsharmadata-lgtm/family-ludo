@@ -265,60 +265,59 @@
     }
   }
   
-  /* Ludo Board */
+/* Ludo Board */
 .ludo-board {
+  position: relative;
   width: 100%;
   max-width: 600px;
-  aspect-ratio: 1;
+  aspect-ratio: 1 / 1;
+  margin: 0 auto;
   background: white;
   border: 3px solid #333;
-  position: relative;
-  display: grid;
-  grid-template-columns: 40% 20% 40%;
-  grid-template-rows: 40% 20% 40%;
-  gap: 0;
 }
 
-/* Home Areas */
+/* Home Areas - 4 corners */
 .home-area {
+  position: absolute;
+  width: 40%;
+  height: 40%;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
-  position: relative;
+  border: 2px solid rgba(0,0,0,0.2);
 }
 
 .red-home {
   background: #ff6b6b;
-  grid-column: 1;
-  grid-row: 3;
+  top: 0;
+  left: 0;
 }
 
 .green-home {
   background: #51cf66;
-  grid-column: 3;
-  grid-row: 1;
+  top: 0;
+  right: 0;
 }
 
 .yellow-home {
   background: #ffd93d;
-  grid-column: 1;
-  grid-row: 1;
+  bottom: 0;
+  right: 0;
 }
 
 .blue-home {
   background: #4dabf7;
-  grid-column: 3;
-  grid-row: 3;
+  bottom: 0;
+  left: 0;
 }
 
 .home-tokens {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
-  gap: 15px;
-  width: 70%;
-  height: 70%;
+  gap: 12%;
+  width: 65%;
+  height: 65%;
 }
 
 .home-token {
@@ -343,6 +342,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
 .red-home .home-token.has-token::after {
@@ -382,6 +382,7 @@
   justify-content: center;
   pointer-events: all;
   box-sizing: border-box;
+  transform: translate(-50%, -50%);
 }
 
 .path-cell.safe {
@@ -392,7 +393,7 @@
 .path-cell.safe::after {
   content: '★';
   position: absolute;
-  font-size: 20px;
+  font-size: 18px;
   color: #1976d2;
 }
 
@@ -435,8 +436,8 @@
 }
 
 .token {
-  width: 70%;
-  height: 70%;
+  width: 80%;
+  height: 80%;
   border-radius: 50%;
   position: absolute;
   top: 50%;
@@ -444,9 +445,9 @@
   transform: translate(-50%, -50%);
   cursor: pointer;
   transition: all 0.3s;
-  border: 2px solid rgba(0,0,0,0.3);
+  border: 3px solid rgba(255,255,255,0.8);
   z-index: 10;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
 }
 
 .token:hover {
@@ -455,8 +456,9 @@
 
 .token.selectable {
   animation: pulse 1s infinite;
-  box-shadow: 0 0 0 3px rgba(255,255,255,0.8), 0 0 10px rgba(0,0,0,0.3);
+  box-shadow: 0 0 0 3px rgba(255,255,255,0.9), 0 0 15px rgba(0,0,0,0.4);
   cursor: pointer;
+  z-index: 20;
 }
 
 @keyframes pulse {
@@ -471,20 +473,24 @@
 
 /* Center Area */
 .center-area {
-  grid-column: 2;
-  grid-row: 2;
-  background: #f0f0f0;
-  position: relative;
+  position: absolute;
+  width: 20%;
+  height: 20%;
+  top: 40%;
+  left: 40%;
+  background: white;
+  border: 3px solid #333;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid #333;
+  z-index: 5;
 }
 
 .center-area::after {
   content: '🏆';
-  font-size: 40px;
+  font-size: clamp(20px, 3vw, 40px);
   position: absolute;
+  z-index: 6;
 }
 
 .victory-triangle {
@@ -492,42 +498,43 @@
   width: 0;
   height: 0;
   border-style: solid;
+  z-index: 1;
 }
 
 .red-victory {
-  border-width: 0 0 100% 100%;
-  border-color: transparent transparent #ff6b6b transparent;
-  bottom: 0;
+  border-width: 50% 0 50% 50%;
+  border-color: transparent transparent transparent #ff6b6b;
   left: 0;
+  top: 0;
   width: 50%;
-  height: 50%;
+  height: 100%;
 }
 
 .green-victory {
-  border-width: 100% 100% 0 0;
-  border-color: #51cf66 transparent transparent transparent;
-  top: 0;
+  border-width: 0 50% 50% 0;
+  border-color: transparent #51cf66 transparent transparent;
   right: 0;
+  top: 0;
   width: 50%;
-  height: 50%;
+  height: 100%;
 }
 
 .yellow-victory {
-  border-width: 100% 0 0 100%;
-  border-color: transparent transparent transparent #ffd93d;
-  top: 0;
-  left: 0;
+  border-width: 50% 50% 0 0;
+  border-color: #ffd93d transparent transparent transparent;
+  right: 0;
+  bottom: 0;
   width: 50%;
-  height: 50%;
+  height: 100%;
 }
 
 .blue-victory {
-  border-width: 0 100% 100% 0;
-  border-color: transparent #4dabf7 transparent transparent;
+  border-width: 0 0 50% 50%;
+  border-color: transparent transparent #4dabf7 transparent;
+  left: 0;
   bottom: 0;
-  right: 0;
   width: 50%;
-  height: 50%;
+  height: 100%;
 }
   
   /* Path Container */
