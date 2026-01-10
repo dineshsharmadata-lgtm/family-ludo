@@ -95,60 +95,57 @@
       </div>
 
       <div class="game-container">
-        <!-- The actual board -->
-        <div class="ludo-board" id="ludoBoard">
-
-          <!-- HOME AREAS:
-               These are the 4 "bases" where tokens start (position = -1 in JS).
-               Each has 4 placeholders for tokens. -->
-          <div class="home-area red-home">
-            <div class="home-tokens" data-color="red">
-              <div class="home-token" data-token="0"></div>
-              <div class="home-token" data-token="1"></div>
-              <div class="home-token" data-token="2"></div>
-              <div class="home-token" data-token="3"></div>
-            </div>
-          </div>
-
-          <div class="home-area green-home">
-            <div class="home-tokens" data-color="green">
-              <div class="home-token" data-token="0"></div>
-              <div class="home-token" data-token="1"></div>
-              <div class="home-token" data-token="2"></div>
-              <div class="home-token" data-token="3"></div>
-            </div>
-          </div>
-
-          <div class="home-area yellow-home">
-            <div class="home-tokens" data-color="yellow">
-              <div class="home-token" data-token="0"></div>
-              <div class="home-token" data-token="1"></div>
-              <div class="home-token" data-token="2"></div>
-              <div class="home-token" data-token="3"></div>
-            </div>
-          </div>
-
-          <div class="home-area blue-home">
-            <div class="home-tokens" data-color="blue">
-              <div class="home-token" data-token="0"></div>
-              <div class="home-token" data-token="1"></div>
-              <div class="home-token" data-token="2"></div>
-              <div class="home-token" data-token="3"></div>
-            </div>
-          </div>
-
-          <!-- PATH CELLS:
-               JS will create and append 52 main path cells + home stretch cells here -->
-          <div class="path-container" id="pathContainer"></div>
-
-          <!-- Center decoration (victory triangles) -->
-          <div class="center-area">
-            <div class="victory-triangle red-victory"></div>
-            <div class="victory-triangle green-victory"></div>
-            <div class="victory-triangle yellow-victory"></div>
-            <div class="victory-triangle blue-victory"></div>
+      <!-- The actual board -->
+      <div class="ludo-board" id="ludoBoard">
+      
+        <!-- HOME AREAS in 4 corners -->
+        <div class="home-area red-home">
+          <div class="home-tokens" data-color="red">
+            <div class="home-token" data-token="0"></div>
+            <div class="home-token" data-token="1"></div>
+            <div class="home-token" data-token="2"></div>
+            <div class="home-token" data-token="3"></div>
           </div>
         </div>
+      
+        <div class="home-area green-home">
+          <div class="home-tokens" data-color="green">
+            <div class="home-token" data-token="0"></div>
+            <div class="home-token" data-token="1"></div>
+            <div class="home-token" data-token="2"></div>
+            <div class="home-token" data-token="3"></div>
+          </div>
+        </div>
+      
+        <div class="home-area yellow-home">
+          <div class="home-tokens" data-color="yellow">
+            <div class="home-token" data-token="0"></div>
+            <div class="home-token" data-token="1"></div>
+            <div class="home-token" data-token="2"></div>
+            <div class="home-token" data-token="3"></div>
+          </div>
+        </div>
+      
+        <div class="home-area blue-home">
+          <div class="home-tokens" data-color="blue">
+            <div class="home-token" data-token="0"></div>
+            <div class="home-token" data-token="1"></div>
+            <div class="home-token" data-token="2"></div>
+            <div class="home-token" data-token="3"></div>
+          </div>
+        </div>
+      
+        <!-- PATH CELLS: JS creates these -->
+        <div class="path-container" id="pathContainer"></div>
+      
+        <!-- Center trophy area -->
+        <div class="center-area">
+          <div class="victory-triangle red-victory"></div>
+          <div class="victory-triangle green-victory"></div>
+          <div class="victory-triangle yellow-victory"></div>
+          <div class="victory-triangle blue-victory"></div>
+        </div>
+      </div>
 
         <!-- Right-side controls panel -->
         <div class="game-controls">
