@@ -31,115 +31,91 @@ const ADMIN_PASSWORD = "family2024";
  * Board positions 0..51 are the main loop around the board.
  * Each entry is an (x,y) in percentage so we can absolutely-position cells.
  */
+// Grid-based path positions (15x15 grid) - Plus sign pattern
 const PATH_POSITIONS = [
-  // RED path (starts bottom-left, goes up)
-  { x: 6.67, y: 60 },     // 0 - RED START
-  { x: 6.67, y: 53.33 },  // 1
-  { x: 6.67, y: 46.67 },  // 2
-  { x: 6.67, y: 40 },     // 3
-  { x: 6.67, y: 33.33 },  // 4
-  { x: 6.67, y: 26.67 },  // 5
-  { x: 0, y: 26.67 },     // 6 - corner
-  { x: 0, y: 20 },        // 7
-  { x: 0, y: 13.33 },     // 8 - SAFE
-
-  // YELLOW path (goes right along top)
-  { x: 0, y: 6.67 },      // 9
-  { x: 0, y: 0 },         // 10
-  { x: 6.67, y: 0 },      // 11
-  { x: 13.33, y: 0 },     // 12
-  { x: 20, y: 0 },        // 13 - YELLOW START
-  { x: 26.67, y: 0 },     // 14
-  { x: 33.33, y: 0 },     // 15
-  { x: 40, y: 0 },        // 16
-  { x: 46.67, y: 0 },     // 17
-  { x: 53.33, y: 0 },     // 18
-  { x: 60, y: 0 },        // 19 - corner
-  { x: 60, y: 6.67 },     // 20
-  { x: 60, y: 13.33 },    // 21 - SAFE
-
-  // GREEN path (goes down on right)
-  { x: 60, y: 20 },       // 22
-  { x: 60, y: 26.67 },    // 23
-  { x: 60, y: 33.33 },    // 24
-  { x: 60, y: 40 },       // 25
-  { x: 60, y: 46.67 },    // 26 - GREEN START
-  { x: 60, y: 53.33 },    // 27
-  { x: 60, y: 60 },       // 28
-  { x: 60, y: 66.67 },    // 29
-  { x: 60, y: 73.33 },    // 30
-  { x: 60, y: 80 },       // 31
-  { x: 60, y: 86.67 },    // 32 - corner
-  { x: 53.33, y: 86.67 }, // 33
-  { x: 46.67, y: 86.67 }, // 34 - SAFE
-
-  // BLUE path (goes left along bottom)
-  { x: 40, y: 86.67 },    // 35
-  { x: 33.33, y: 86.67 }, // 36
-  { x: 26.67, y: 86.67 }, // 37
-  { x: 20, y: 86.67 },    // 38
-  { x: 13.33, y: 86.67 }, // 39 - BLUE START
-  { x: 13.33, y: 80 },    // 40
-  { x: 13.33, y: 73.33 }, // 41
-  { x: 13.33, y: 66.67 }, // 42
-  { x: 13.33, y: 60 },    // 43
-  { x: 13.33, y: 53.33 }, // 44
-  { x: 13.33, y: 46.67 }, // 45 - corner
-  { x: 13.33, y: 40 },    // 46
-  { x: 13.33, y: 33.33 }, // 47 - SAFE
-
-  // Back to RED (completes circle)
-  { x: 13.33, y: 26.67 }, // 48
-  { x: 13.33, y: 20 },    // 49
-  { x: 13.33, y: 13.33 }, // 50
-  { x: 13.33, y: 6.67 },  // 51
+  // RED path (starts at left middle, goes up)
+  { col: 1, row: 8 },   // 0 - RED START
+  { col: 2, row: 8 },   // 1
+  { col: 3, row: 8 },   // 2
+  { col: 4, row: 8 },   // 3
+  { col: 5, row: 8 },   // 4
+  { col: 6, row: 8 },   // 5
+  { col: 7, row: 7 },   // 6 - turn
+  { col: 7, row: 6 },   // 7
+  { col: 7, row: 5 },   // 8
+  { col: 7, row: 4 },   // 9
+  { col: 7, row: 3 },   // 10
+  { col: 7, row: 2 },   // 11
+  { col: 7, row: 1 },   // 12
+  
+  // YELLOW path (top middle, goes right)
+  { col: 8, row: 1 },   // 13 - YELLOW START
+  { col: 8, row: 2 },   // 14
+  { col: 8, row: 3 },   // 15
+  { col: 8, row: 4 },   // 16
+  { col: 8, row: 5 },   // 17
+  { col: 8, row: 6 },   // 18
+  { col: 9, row: 7 },   // 19 - turn
+  { col: 10, row: 7 },  // 20
+  { col: 11, row: 7 },  // 21
+  { col: 12, row: 7 },  // 22
+  { col: 13, row: 7 },  // 23
+  { col: 14, row: 7 },  // 24
+  { col: 15, row: 7 },  // 25
+  
+  // GREEN path (right middle, goes down)
+  { col: 15, row: 8 },  // 26 - GREEN START
+  { col: 14, row: 8 },  // 27
+  { col: 13, row: 8 },  // 28
+  { col: 12, row: 8 },  // 29
+  { col: 11, row: 8 },  // 30
+  { col: 10, row: 8 },  // 31
+  { col: 9, row: 9 },   // 32 - turn
+  { col: 9, row: 10 },  // 33
+  { col: 9, row: 11 },  // 34
+  { col: 9, row: 12 },  // 35
+  { col: 9, row: 13 },  // 36
+  { col: 9, row: 14 },  // 37
+  { col: 9, row: 15 },  // 38
+  
+  // BLUE path (bottom middle, goes left)
+  { col: 8, row: 15 },  // 39 - BLUE START
+  { col: 8, row: 14 },  // 40
+  { col: 8, row: 13 },  // 41
+  { col: 8, row: 12 },  // 42
+  { col: 8, row: 11 },  // 43
+  { col: 8, row: 10 },  // 44
+  { col: 7, row: 9 },   // 45 - turn
+  { col: 6, row: 9 },   // 46
+  { col: 5, row: 9 },   // 47
+  { col: 4, row: 9 },   // 48
+  { col: 3, row: 9 },   // 49
+  { col: 2, row: 9 },   // 50
+  { col: 1, row: 9 },   // 51
 ];
 
-/**
- * HOME_STRETCH:
- * Each color has a "home stretch" path (the final 5 steps).
- * In this code, when a token enters home stretch, we treat its position
- * as an index within this array (0..5-ish).
- */
+// Home stretch paths (leading to center)
 const HOME_STRETCH = {
   red: [
-    { x: 20, y: 60 },
-    { x: 26.67, y: 60 },
-    { x: 33.33, y: 60 },
-    { x: 40, y: 60 },
-    { x: 46.67, y: 60 },
+    { col: 7, row: 8 },   // entry from path
+    { col: 8, row: 8 },   // finish at center
   ],
   yellow: [
-    { x: 26.67, y: 6.67 },
-    { x: 26.67, y: 13.33 },
-    { x: 26.67, y: 20 },
-    { x: 26.67, y: 26.67 },
-    { x: 26.67, y: 33.33 },
+    { col: 8, row: 7 },   // entry
+    { col: 8, row: 8 },   // finish
   ],
   green: [
-    { x: 53.33, y: 46.67 },
-    { x: 46.67, y: 46.67 },
-    { x: 40, y: 46.67 },
-    { x: 33.33, y: 46.67 },
-    { x: 26.67, y: 46.67 },
+    { col: 9, row: 8 },   // entry
+    { col: 8, row: 8 },   // finish
   ],
   blue: [
-    { x: 33.33, y: 80 },
-    { x: 33.33, y: 73.33 },
-    { x: 33.33, y: 66.67 },
-    { x: 33.33, y: 60 },
-    { x: 33.33, y: 53.33 },
+    { col: 8, row: 9 },   // entry
+    { col: 8, row: 8 },   // finish
   ],
 };
 
-// Each color's start index on the main path loop
 const START_POSITIONS = { red: 0, yellow: 13, green: 26, blue: 39 };
-
-// Tokens on safe spots cannot be captured
-const SAFE_SPOTS = [0, 8, 13, 21, 26, 34, 39, 47];
-
-// Stars are just special styling here (optional rule variations)
-const STAR_SPOTS = [5, 18, 31, 44];
+const SAFE_SPOTS = [0, 8, 14, 22, 28, 36, 42, 50];
 
 /* ---------------------------------------------------------------------------
    2) GLOBAL STATE (mutable)
