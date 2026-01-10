@@ -562,7 +562,12 @@ function handleMessage(data, conn) {
    
      if (myPlayerIndex !== null) {
        const myColor = gameState.players[myPlayerIndex]?.color;
-       if (myColor && gameState.currentTurn === myColor) highlightSelectableTokens();
+       if (myColor && gameState.currentTurn === myColor) {
+         highlightSelectableTokens();
+       } else {
+         clearSelectableTokens();
+         disableDiceRoll();
+       }
      }
      break;
    
@@ -575,12 +580,20 @@ function handleMessage(data, conn) {
      break;
    
    case "turnChanged":
-     if (isAdmin) broadcast(data);   // relay
      gameState.currentTurn = data.turn;
      gameState.selectableTokens = [];
+     gameState.diceRoll = null;
+   
+     clearSelectableTokens();
      updateTurnDisplay();
      updatePlayersInfo();
-     clearSelectableTokens();
+     renderBoard();
+   
+     if (myPlayerIndex !== null) {
+       const myColor = gameState.players[myPlayerIndex]?.color;
+       if (myColor && gameState.currentTurn === myColor) enableDiceRoll();
+       else disableDiceRoll();
+     }
      break;
 
     case "gameOver":
@@ -808,15 +821,21 @@ function getSelectableTokens(color, roll) {
  * We attach click handlers to move the selected token.
  */
 function highlightSelectableTokens() {
-   if (myPlayerIndex === null || !gameState.players[myPlayerIndex]) return;
-  clearSelectableTokens();
+  // If I haven't selected a player slot yet, do nothing
+  if (myPlayerIndex === null || !gameState.players?.[myPlayerIndex]) return;
 
   const myColor = gameState.players[myPlayerIndex].color;
+  if (!myColor) return;
 
-  gameState.selectableTokens.forEach((tokenId) => {
-    const token = gameState.tokens[myColor][tokenId];
+  clearSelectableTokens();
 
-    // Token still in home area
+  // Only highlight if it's MY turn
+  if (gameState.currentTurn !== myColor) return;
+
+  (gameState.selectableTokens || []).forEach((tokenId) => {
+    const token = gameState.tokens?.[myColor]?.[tokenId];
+    if (!token) return;
+
     if (token.position === -1) {
       const homeToken = document.querySelector(
         `.home-tokens[data-color="${myColor}"] .home-token[data-token="${tokenId}"]`
@@ -826,7 +845,6 @@ function highlightSelectableTokens() {
         homeToken.addEventListener("click", () => moveTokenFromHome(tokenId));
       }
     } else {
-      // Token already on the board
       const tokenEl = document.querySelector(`.token.${myColor}[data-token="${tokenId}"]`);
       if (tokenEl) {
         tokenEl.classList.add("selectable");
