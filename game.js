@@ -34,88 +34,88 @@ const ADMIN_PASSWORD = "family2024";
 // Grid-based path positions (15x15 grid) - Plus sign pattern
 const PATH_POSITIONS = [
   // RED path (starts at left middle, goes up)
-  { col: 1, row: 8 },   // 0 - RED START
-  { col: 2, row: 8 },   // 1
-  { col: 3, row: 8 },   // 2
-  { col: 4, row: 8 },   // 3
-  { col: 5, row: 8 },   // 4
-  { col: 6, row: 8 },   // 5
-  { col: 7, row: 7 },   // 6 - turn
-  { col: 7, row: 6 },   // 7
-  { col: 7, row: 5 },   // 8
-  { col: 7, row: 4 },   // 9
-  { col: 7, row: 3 },   // 10
-  { col: 7, row: 2 },   // 11
-  { col: 7, row: 1 },   // 12
+  { x: 6.67, y: 53.33 },   // 0 - RED START
+  { x: 13.33, y: 53.33 },  // 1
+  { x: 20, y: 53.33 },     // 2
+  { x: 26.67, y: 53.33 },  // 3
+  { x: 33.33, y: 53.33 },  // 4
+  { x: 40, y: 53.33 },     // 5
+  { x: 46.67, y: 46.67 },  // 6 - turn (SAFE)
+  { x: 46.67, y: 40 },     // 7
+  { x: 46.67, y: 33.33 },  // 8
+  { x: 46.67, y: 26.67 },  // 9
+  { x: 46.67, y: 20 },     // 10
+  { x: 46.67, y: 13.33 },  // 11
+  { x: 46.67, y: 6.67 },   // 12
   
   // YELLOW path (top middle, goes right)
-  { col: 8, row: 1 },   // 13 - YELLOW START
-  { col: 8, row: 2 },   // 14
-  { col: 8, row: 3 },   // 15
-  { col: 8, row: 4 },   // 16
-  { col: 8, row: 5 },   // 17
-  { col: 8, row: 6 },   // 18
-  { col: 9, row: 7 },   // 19 - turn
-  { col: 10, row: 7 },  // 20
-  { col: 11, row: 7 },  // 21
-  { col: 12, row: 7 },  // 22
-  { col: 13, row: 7 },  // 23
-  { col: 14, row: 7 },  // 24
-  { col: 15, row: 7 },  // 25
+  { x: 53.33, y: 6.67 },   // 13 - YELLOW START
+  { x: 53.33, y: 13.33 },  // 14
+  { x: 53.33, y: 20 },     // 15
+  { x: 53.33, y: 26.67 },  // 16
+  { x: 53.33, y: 33.33 },  // 17
+  { x: 53.33, y: 40 },     // 18
+  { x: 60, y: 46.67 },     // 19 - turn (SAFE)
+  { x: 66.67, y: 46.67 },  // 20
+  { x: 73.33, y: 46.67 },  // 21
+  { x: 80, y: 46.67 },     // 22
+  { x: 86.67, y: 46.67 },  // 23
+  { x: 93.33, y: 46.67 },  // 24
+  { x: 100, y: 46.67 },    // 25
   
   // GREEN path (right middle, goes down)
-  { col: 15, row: 8 },  // 26 - GREEN START
-  { col: 14, row: 8 },  // 27
-  { col: 13, row: 8 },  // 28
-  { col: 12, row: 8 },  // 29
-  { col: 11, row: 8 },  // 30
-  { col: 10, row: 8 },  // 31
-  { col: 9, row: 9 },   // 32 - turn
-  { col: 9, row: 10 },  // 33
-  { col: 9, row: 11 },  // 34
-  { col: 9, row: 12 },  // 35
-  { col: 9, row: 13 },  // 36
-  { col: 9, row: 14 },  // 37
-  { col: 9, row: 15 },  // 38
+  { x: 100, y: 53.33 },    // 26 - GREEN START
+  { x: 93.33, y: 53.33 },  // 27
+  { x: 86.67, y: 53.33 },  // 28
+  { x: 80, y: 53.33 },     // 29
+  { x: 73.33, y: 53.33 },  // 30
+  { x: 66.67, y: 53.33 },  // 31
+  { x: 60, y: 60 },        // 32 - turn (SAFE)
+  { x: 60, y: 66.67 },     // 33
+  { x: 60, y: 73.33 },     // 34
+  { x: 60, y: 80 },        // 35
+  { x: 60, y: 86.67 },     // 36
+  { x: 60, y: 93.33 },     // 37
+  { x: 60, y: 100 },       // 38
   
   // BLUE path (bottom middle, goes left)
-  { col: 8, row: 15 },  // 39 - BLUE START
-  { col: 8, row: 14 },  // 40
-  { col: 8, row: 13 },  // 41
-  { col: 8, row: 12 },  // 42
-  { col: 8, row: 11 },  // 43
-  { col: 8, row: 10 },  // 44
-  { col: 7, row: 9 },   // 45 - turn
-  { col: 6, row: 9 },   // 46
-  { col: 5, row: 9 },   // 47
-  { col: 4, row: 9 },   // 48
-  { col: 3, row: 9 },   // 49
-  { col: 2, row: 9 },   // 50
-  { col: 1, row: 9 },   // 51
+  { x: 53.33, y: 100 },    // 39 - BLUE START
+  { x: 53.33, y: 93.33 },  // 40
+  { x: 53.33, y: 86.67 },  // 41
+  { x: 53.33, y: 80 },     // 42
+  { x: 53.33, y: 73.33 },  // 43
+  { x: 53.33, y: 66.67 },  // 44
+  { x: 46.67, y: 60 },     // 45 - turn (SAFE)
+  { x: 40, y: 60 },        // 46
+  { x: 33.33, y: 60 },     // 47
+  { x: 26.67, y: 60 },     // 48
+  { x: 20, y: 60 },        // 49
+  { x: 13.33, y: 60 },     // 50
+  { x: 6.67, y: 60 },      // 51
 ];
 
 // Home stretch paths (leading to center)
 const HOME_STRETCH = {
   red: [
-    { col: 7, row: 8 },   // entry from path
-    { col: 8, row: 8 },   // finish at center
+    { x: 46.67, y: 53.33 },
+    { x: 53.33, y: 53.33 },
   ],
   yellow: [
-    { col: 8, row: 7 },   // entry
-    { col: 8, row: 8 },   // finish
+    { x: 53.33, y: 46.67 },
+    { x: 53.33, y: 53.33 },
   ],
   green: [
-    { col: 9, row: 8 },   // entry
-    { col: 8, row: 8 },   // finish
+    { x: 60, y: 53.33 },
+    { x: 53.33, y: 53.33 },
   ],
   blue: [
-    { col: 8, row: 9 },   // entry
-    { col: 8, row: 8 },   // finish
+    { x: 53.33, y: 60 },
+    { x: 53.33, y: 53.33 },
   ],
 };
 
-const START_POSITIONS = { red: 0, yellow: 13, green: 26, blue: 39 };
-const SAFE_SPOTS = [0, 8, 14, 22, 28, 36, 42, 50];
+const STAR_SPOTS = [6, 19, 32, 45]; // The four corner turns
+const SAFE_SPOTS = [0, 6, 13, 19, 26, 32, 39, 45];
 
 /* ---------------------------------------------------------------------------
    2) GLOBAL STATE (mutable)
