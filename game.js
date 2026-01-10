@@ -507,28 +507,33 @@ function setupConnection(conn) {
  * This is like your API endpoint handler.
  */
 function handleMessage(data, conn) {
+  // Admin only RELAYS these messages to other players
+  if (
+    isAdmin &&
+    (data.type === "diceRolled" ||
+      data.type === "tokenMoved" ||
+      data.type === "turnChanged" ||
+      data.type === "gameOver")
+  ) {
+    connections.forEach((c) => {
+      if (c.open && c !== conn) c.send(data);
+    });
+  }
+
   switch (data.type) {
     case "requestGameState":
-      if (isAdmin) {
-        conn.send({ type: "gameState", state: gameState });
-      }
+      if (isAdmin) conn.send({ type: "gameState", state: gameState });
       break;
 
     case "gameState":
-      // Player receives current setup/state from admin
       gameState = data.state;
-
-      if (!gameState.gameStarted) {
-        showPlayerSelection();
-      } else {
-        // If game started, see if I already joined a slot earlier
+      if (!gameState.gameStarted) showPlayerSelection();
+      else {
         const myPlayer = gameState.players.find((p) => p.playerId === myPlayerId);
         if (myPlayer) {
           myPlayerIndex = gameState.players.indexOf(myPlayer);
           startGamePlay();
-        } else {
-          alert("Game already started");
-        }
+        } else alert("Game already started");
       }
       break;
 
