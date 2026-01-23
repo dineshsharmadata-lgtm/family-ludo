@@ -42,7 +42,7 @@
         <div id="playerSetupSection" class="hidden">
           <h3>Setup Players (2-4)</h3>
 
-          <!-- JS will render player “slots” here -->
+          <!-- JS will render player "slots" here -->
           <div id="playersSetupList"></div>
 
           <!-- Add one more player slot (max 4) -->
@@ -95,57 +95,57 @@
       </div>
 
       <div class="game-container">
-      <!-- The actual board -->
-      <div class="ludo-board" id="ludoBoard">
-      
-        <!-- HOME AREAS in 4 corners -->
-        <div class="home-area red-home">
-          <div class="home-tokens" data-color="red">
-            <div class="home-token" data-token="0"></div>
-            <div class="home-token" data-token="1"></div>
-            <div class="home-token" data-token="2"></div>
-            <div class="home-token" data-token="3"></div>
+        <!-- The actual board -->
+        <div class="ludo-board" id="ludoBoard">
+        
+          <!-- HOME AREAS in 4 corners -->
+          <div class="home-area red-home">
+            <div class="home-tokens" data-color="red">
+              <div class="home-token" data-token="0"></div>
+              <div class="home-token" data-token="1"></div>
+              <div class="home-token" data-token="2"></div>
+              <div class="home-token" data-token="3"></div>
+            </div>
+          </div>
+        
+          <div class="home-area green-home">
+            <div class="home-tokens" data-color="green">
+              <div class="home-token" data-token="0"></div>
+              <div class="home-token" data-token="1"></div>
+              <div class="home-token" data-token="2"></div>
+              <div class="home-token" data-token="3"></div>
+            </div>
+          </div>
+        
+          <div class="home-area yellow-home">
+            <div class="home-tokens" data-color="yellow">
+              <div class="home-token" data-token="0"></div>
+              <div class="home-token" data-token="1"></div>
+              <div class="home-token" data-token="2"></div>
+              <div class="home-token" data-token="3"></div>
+            </div>
+          </div>
+        
+          <div class="home-area blue-home">
+            <div class="home-tokens" data-color="blue">
+              <div class="home-token" data-token="0"></div>
+              <div class="home-token" data-token="1"></div>
+              <div class="home-token" data-token="2"></div>
+              <div class="home-token" data-token="3"></div>
+            </div>
+          </div>
+        
+          <!-- PATH CELLS: JS creates these -->
+          <div class="path-container" id="pathContainer"></div>
+        
+          <!-- Center trophy area -->
+          <div class="center-area">
+            <div class="victory-triangle red-victory"></div>
+            <div class="victory-triangle green-victory"></div>
+            <div class="victory-triangle yellow-victory"></div>
+            <div class="victory-triangle blue-victory"></div>
           </div>
         </div>
-      
-        <div class="home-area green-home">
-          <div class="home-tokens" data-color="green">
-            <div class="home-token" data-token="0"></div>
-            <div class="home-token" data-token="1"></div>
-            <div class="home-token" data-token="2"></div>
-            <div class="home-token" data-token="3"></div>
-          </div>
-        </div>
-      
-        <div class="home-area yellow-home">
-          <div class="home-tokens" data-color="yellow">
-            <div class="home-token" data-token="0"></div>
-            <div class="home-token" data-token="1"></div>
-            <div class="home-token" data-token="2"></div>
-            <div class="home-token" data-token="3"></div>
-          </div>
-        </div>
-      
-        <div class="home-area blue-home">
-          <div class="home-tokens" data-color="blue">
-            <div class="home-token" data-token="0"></div>
-            <div class="home-token" data-token="1"></div>
-            <div class="home-token" data-token="2"></div>
-            <div class="home-token" data-token="3"></div>
-          </div>
-        </div>
-      
-        <!-- PATH CELLS: JS creates these -->
-        <div class="path-container" id="pathContainer"></div>
-      
-        <!-- Center trophy area -->
-        <div class="center-area">
-          <div class="victory-triangle red-victory"></div>
-          <div class="victory-triangle green-victory"></div>
-          <div class="victory-triangle yellow-victory"></div>
-          <div class="victory-triangle blue-victory"></div>
-        </div>
-      </div>
 
         <!-- Right-side controls panel -->
         <div class="game-controls">
@@ -177,8 +177,36 @@
   <!-- PeerJS library (for peer-to-peer connections) -->
   <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 
-  <!-- Your main game logic.
-       Version query string helps avoid caching old JS files. -->
-  <script src="game.js?v=2"></script>
+  <!-- 
+    OPTION 1: Use modular JS files (ES6 modules)
+    Uncomment this if you want separate files
+  -->
+  <!-- <script type="module" src="js/main.js"></script> -->
+
+  <!-- 
+    OPTION 2: Use single file (current approach)
+    Keep this if you want everything in one file
+  -->
+  <script src="script.js?v=3"></script>
+
+  <!-- Debug helper (temporary - remove in production) -->
+  <script>
+    window.addEventListener('load', () => {
+      console.log("🎮 Game Page Loaded");
+      console.log("📍 Roll Dice Button:", document.getElementById("rollDice"));
+      console.log("📍 Current Turn Display:", document.getElementById("currentTurn"));
+      console.log("📍 Dice Display:", document.getElementById("diceDisplay"));
+    });
+
+    // Global error handler to catch any JS errors
+    window.addEventListener('error', (e) => {
+      console.error("❌ Global Error:", e.message, e.filename, e.lineno);
+    });
+
+    // Catch unhandled promise rejections
+    window.addEventListener('unhandledrejection', (e) => {
+      console.error("❌ Unhandled Promise Rejection:", e.reason);
+    });
+  </script>
 </body>
 </html>
