@@ -410,7 +410,17 @@ function startGameAsAdmin() {
     return;
   }
 
-  // Initialize tokens: position=-1 means "in home"
+  // Auto-assign admin to first available slot
+  if (myPlayerIndex === null) {
+    const availableSlot = gameState.players.findIndex(p => !p.joined);
+    if (availableSlot !== -1) {
+      gameState.players[availableSlot].playerId = myPlayerId;
+      gameState.players[availableSlot].joined = true;
+      myPlayerIndex = availableSlot;
+    }
+  }
+
+  // Initialize tokens
   gameState.tokens = {};
   gameState.players.forEach((player) => {
     gameState.tokens[player.color] = [];
@@ -511,13 +521,11 @@ function handleMessage(data, conn) {
       break;
 
     case "gameState":
-      // Player receives current setup/state from admin
       gameState = data.state;
 
       if (!gameState.gameStarted) {
         showPlayerSelection();
       } else {
-        // If game started, see if I already joined a slot earlier
         const myPlayer = gameState.players.find((p) => p.playerId === myPlayerId);
         if (myPlayer) {
           myPlayerIndex = gameState.players.indexOf(myPlayer);
@@ -528,8 +536,13 @@ function handleMessage(data, conn) {
       }
       break;
 
+    case "requestNextTurn":
+      if (isAdmin) {
+        nextTurn();
+      }
+      break;
+
     case "playerSelected":
-      // Admin records which device selected which slot
       if (isAdmin) {
         const playerIndex = data.playerIndex;
         if (!gameState.players[playerIndex].joined) {
@@ -546,23 +559,21 @@ function handleMessage(data, conn) {
       startGamePlay();
       break;
 
-   case "diceRolled":
-     gameState.diceRoll = data.roll;
-     gameState.selectableTokens = data.selectableTokens;
-     updateDiceDisplay(data.roll);
-     
-     // Only highlight tokens if it's MY turn
-     if (myPlayerIndex !== null) {
-       const myColor = gameState.players[myPlayerIndex]?.color;
-       if (myColor && gameState.currentTurn === myColor) {
-         highlightSelectableTokens();
-       } else {
-         // Not my turn, disable dice and clear any highlights
-         clearSelectableTokens();
-         disableDiceRoll();
-       }
-     }
-     break;
+    case "diceRolled":
+      gameState.diceRoll = data.roll;
+      gameState.selectableTokens = data.selectableTokens;
+      updateDiceDisplay(data.roll);
+      
+      if (myPlayerIndex !== null) {
+        const myColor = gameState.players[myPlayerIndex]?.color;
+        if (myColor && gameState.currentTurn === myColor) {
+          highlightSelectableTokens();
+        } else {
+          clearSelectableTokens();
+          disableDiceRoll();
+        }
+      }
+      break;
 
     case "tokenMoved":
       gameState = data.state;
@@ -570,26 +581,25 @@ function handleMessage(data, conn) {
       updatePlayersInfo();
       break;
 
-   case "turnChanged":
-     gameState.currentTurn = data.turn;
-     gameState.selectableTokens = [];
-     gameState.diceRoll = null;
-     
-     clearSelectableTokens();
-     updateTurnDisplay();
-     updatePlayersInfo();
-     renderBoard();
-     
-     // Enable dice only if it's MY turn
-     if (myPlayerIndex !== null) {
-       const myColor = gameState.players[myPlayerIndex]?.color;
-       if (myColor && gameState.currentTurn === myColor) {
-         enableDiceRoll();
-       } else {
-         disableDiceRoll();
-       }
-     }
-     break;
+    case "turnChanged":
+      gameState.currentTurn = data.turn;
+      gameState.selectableTokens = [];
+      gameState.diceRoll = null;
+      
+      clearSelectableTokens();
+      updateTurnDisplay();
+      updatePlayersInfo();
+      renderBoard();
+      
+      if (myPlayerIndex !== null) {
+        const myColor = gameState.players[myPlayerIndex]?.color;
+        if (myColor && gameState.currentTurn === myColor) {
+          enableDiceRoll();
+        } else {
+          disableDiceRoll();
+        }
+      }
+      break;
 
     case "gameOver":
       gameState.winner = data.winner;
@@ -597,7 +607,6 @@ function handleMessage(data, conn) {
       break;
   }
 }
-
 /* ---------------------------------------------------------------------------
    7) PLAYER SELECTION SCREEN (for non-admins)
 --------------------------------------------------------------------------- */
@@ -777,11 +786,15 @@ function rollDice() {
   broadcast({ type: "diceRolled", roll, selectableTokens });
 
   // If no moves possible, auto-advance turn after a short pause
-  if (selectableTokens.length === 0) {
-    setTimeout(() => nextTurn(), 1500);
-  } else {
-    highlightSelectableTokens();
-  }
+   if (selectableTokens.length === 0) {
+     setTimeout(() => {
+       if (isAdmin) {
+         nextTurn();
+       } else {
+         connections[0].send({ type: "requestNextTurn" });
+       }
+     }, 1500);
+   }
 }
 
 function nextTurn() {
@@ -927,12 +940,17 @@ function moveTokenFromHome(tokenId) {
   renderBoard();
 
   // If roll is 6, player gets another roll
-  if (gameState.diceRoll === 6) {
-    setTimeout(() => enableDiceRoll(), 500);
-  } else {
-    setTimeout(() => nextTurn(), 1000);
-  }
-}
+   if (gameState.diceRoll === 6) {
+     setTimeout(() => enableDiceRoll(), 500);
+   } else {
+     setTimeout(() => {
+       if (isAdmin) {
+         nextTurn();
+       } else {
+         connections[0].send({ type: "requestNextTurn" });
+       }
+     }, 1000);
+   }
 
 /**
  * Move a token that is already on the board or in home stretch.
@@ -997,11 +1015,17 @@ function moveToken(tokenId) {
   broadcast({ type: "tokenMoved", state: gameState });
   renderBoard();
 
-  if (gameState.diceRoll === 6) {
-    setTimeout(() => enableDiceRoll(), 500);
-  } else {
-    setTimeout(() => nextTurn(), 1000);
-  }
+   if (gameState.diceRoll === 6) {
+     setTimeout(() => enableDiceRoll(), 500);
+   } else {
+     setTimeout(() => {
+       if (isAdmin) {
+         nextTurn();
+       } else {
+         connections[0].send({ type: "requestNextTurn" });
+       }
+     }, 1000);
+   }
 }
 
 /* ---------------------------------------------------------------------------
@@ -1077,6 +1101,8 @@ function checkForWinner() {
  * Move to next player's turn (cyclic).
  */
 function nextTurn() {
+  if (!isAdmin) return; // Safety check
+  
   const currentIndex = gameState.players.findIndex((p) => p.color === gameState.currentTurn);
   const nextIndex = (currentIndex + 1) % gameState.players.length;
   gameState.currentTurn = gameState.players[nextIndex].color;
@@ -1085,10 +1111,7 @@ function nextTurn() {
 
   updateTurnDisplay();
   updatePlayersInfo();
-
-  const myColor = gameState.players[myPlayerIndex].color;
-  if (gameState.currentTurn === myColor) enableDiceRoll();
-}
+  clearSelectableTokens();
 
 /* ---------------------------------------------------------------------------
    13) RENDERING: draw tokens on board, dice, turn, player info
