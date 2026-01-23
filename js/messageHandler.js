@@ -96,7 +96,11 @@ export function handleMessage(data, conn) {
       break;
 
     case "turnChanged":
-        console.log(`Turn changed to: ${data.turn}`);
+        console.log("🔄 TURN CHANGED RECEIVED");
+        console.log("  New turn:", data.turn);
+        console.log("  My index:", state.myPlayerIndex);
+        console.log("  My color:", state.gameState.players[state.myPlayerIndex]?.color);
+        
         state.gameState.currentTurn = data.turn;
         state.gameState.selectableTokens = [];
         state.gameState.diceRoll = null;
@@ -106,16 +110,19 @@ export function handleMessage(data, conn) {
         updatePlayersInfo();
         renderBoard();
         
-        // THIS IS THE KEY PART FOR ENABLING DICE
         if (state.myPlayerIndex !== null && state.gameState.players[state.myPlayerIndex]) {
           const myColor = state.gameState.players[state.myPlayerIndex].color;
+          console.log("  Checking turn: current=" + state.gameState.currentTurn + ", mine=" + myColor);
+          
           if (myColor && state.gameState.currentTurn === myColor) {
-            console.log(`It's my turn! (${myColor})`);
-            enableDiceRoll();  // ← MAKE SURE THIS IS CALLED
+            console.log("✅ IT'S MY TURN - ENABLING DICE");
+            enableDiceRoll();
           } else {
-            console.log(`Not my turn. Current: ${state.gameState.currentTurn}, Mine: ${myColor}`);
+            console.log("❌ NOT MY TURN - DISABLING DICE");
             disableDiceRoll();
           }
+        } else {
+          console.log("⚠️ Player index not set!");
         }
         break;
 
@@ -123,17 +130,6 @@ export function handleMessage(data, conn) {
         state.gameState.winner = data.winner;
         showWinner(data.winner);
         break;
-
-    case "turnChanged":
-        console.log("=== TURN CHANGED DEBUG ===");
-        console.log("New turn:", data.turn);
-        console.log("My player index:", state.myPlayerIndex);
-        console.log("My player:", state.gameState.players[state.myPlayerIndex]);
-        console.log("My color:", state.gameState.players[state.myPlayerIndex]?.color);
-        console.log("Is my turn?", state.gameState.players[state.myPlayerIndex]?.color === data.turn);
-        console.log("========================");
-        
-        // ... rest of the code
 
     default:
       console.warn("Unknown message type:", data.type);
