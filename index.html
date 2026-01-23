@@ -1,156 +1,155 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Family Ludo</title>
-  <link rel="stylesheet" href="styles.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Ludo - Multiplayer Board Game</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-  <div class="container">
-
-    <!-- SCREEN 1: ADMIN SETUP -->
-    <div id="adminSetup" class="screen active">
-      <h1>🎲 Family Ludo - Admin Setup</h1>
-
-      <div class="admin-content">
-        <div class="password-section">
-          <label>Admin Password:</label>
-          <input
-            type="password"
-            id="adminPassword"
-            placeholder="Enter password"
-          />
+    <!-- Admin Login Screen -->
+    <div id="adminLogin" class="screen active">
+        <div class="login-container">
+            <h1>🎲 Family Ludo</h1>
+            <p>Enter admin password to host a game</p>
+            <input type="password" id="adminPasswordInput" placeholder="Enter password">
+            <button onclick="checkAdminPassword()">Start as Admin</button>
+            <p class="hint">Or open a shared game link to join as player</p>
         </div>
-
-        <div id="playerSetupSection" class="hidden">
-          <h3>Setup Players (2-4)</h3>
-          <div id="playersSetupList"></div>
-          <button id="addPlayer" class="btn-secondary">+ Add Player</button>
-
-          <div class="share-section" style="margin-top: 30px;">
-            <h3>Game Link:</h3>
-            <div class="share-box">
-              <input type="text" id="shareLink" readonly />
-              <button id="copyLink">📋 Copy</button>
-            </div>
-            <button id="whatsappShare" class="btn-whatsapp">
-              Share on WhatsApp
-            </button>
-          </div>
-
-          <button id="startGameAdmin" class="btn-primary" disabled>
-            Start Game
-          </button>
-        </div>
-      </div>
     </div>
 
-    <!-- SCREEN 2: PLAYER SELECTION -->
+    <!-- Player Setup Section (Admin Only) -->
+    <div id="playerSetupSection" class="screen">
+        <div class="setup-container">
+            <h2>🎮 Game Setup</h2>
+            <div id="gameCodeDisplay" class="game-code-box">
+                <p>Game Code: <strong id="gameCodeText">Connecting...</strong></p>
+                <button onclick="copyShareLink()">📋 Copy Link</button>
+                <button onclick="shareOnWhatsApp()">📱 Share on WhatsApp</button>
+            </div>
+
+            <div id="playerSetupList" class="player-setup-list">
+                <!-- Player slots will be rendered here -->
+            </div>
+
+            <div class="setup-actions">
+                <button onclick="addPlayerSetup()" id="addPlayerBtn">➕ Add Player</button>
+                <button onclick="startGameAsAdmin()" id="startGameBtn" class="start-btn">🚀 Start Game</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Player Selection Screen (For Joining Players) -->
     <div id="playerSelect" class="screen">
-      <h1>🎲 Select Your Player</h1>
-      <div class="player-selection" id="playerSelection"></div>
-      <p class="info">Waiting for admin to start game...</p>
+        <div class="player-select-container">
+            <h2>👥 Select Your Player</h2>
+            <p>Choose an available player slot to join the game</p>
+            <div id="playerSlots" class="player-slots">
+                <!-- Player selection cards will be rendered here -->
+            </div>
+        </div>
     </div>
 
-    <!-- SCREEN 3: GAME SCREEN -->
+    <!-- Main Game Screen -->
     <div id="gameScreen" class="screen">
-      <div class="game-header">
-        <div id="currentTurn" class="turn-indicator">Waiting...</div>
-        <div id="gameInfo" class="game-code"></div>
-      </div>
+        <!-- Game Board -->
+        <div id="gameBoard" class="game-board">
+            <!-- Home Areas -->
+            <div class="home-area red-home">
+                <div class="home-tokens" id="redHome">
+                    <div class="home-token"></div>
+                    <div class="home-token"></div>
+                    <div class="home-token"></div>
+                    <div class="home-token"></div>
+                </div>
+            </div>
 
-      <div class="game-container">
-        <div class="ludo-board" id="ludoBoard">
-        
-          <div class="home-area red-home">
-            <div class="home-tokens" data-color="red">
-              <div class="home-token" data-token="0"></div>
-              <div class="home-token" data-token="1"></div>
-              <div class="home-token" data-token="2"></div>
-              <div class="home-token" data-token="3"></div>
+            <div class="home-area green-home">
+                <div class="home-tokens" id="greenHome">
+                    <div class="home-token"></div>
+                    <div class="home-token"></div>
+                    <div class="home-token"></div>
+                    <div class="home-token"></div>
+                </div>
             </div>
-          </div>
-        
-          <div class="home-area green-home">
-            <div class="home-tokens" data-color="green">
-              <div class="home-token" data-token="0"></div>
-              <div class="home-token" data-token="1"></div>
-              <div class="home-token" data-token="2"></div>
-              <div class="home-token" data-token="3"></div>
+
+            <div class="home-area yellow-home">
+                <div class="home-tokens" id="yellowHome">
+                    <div class="home-token"></div>
+                    <div class="home-token"></div>
+                    <div class="home-token"></div>
+                    <div class="home-token"></div>
+                </div>
             </div>
-          </div>
-        
-          <div class="home-area yellow-home">
-            <div class="home-tokens" data-color="yellow">
-              <div class="home-token" data-token="0"></div>
-              <div class="home-token" data-token="1"></div>
-              <div class="home-token" data-token="2"></div>
-              <div class="home-token" data-token="3"></div>
+
+            <div class="home-area blue-home">
+                <div class="home-tokens" id="blueHome">
+                    <div class="home-token"></div>
+                    <div class="home-token"></div>
+                    <div class="home-token"></div>
+                    <div class="home-token"></div>
+                </div>
             </div>
-          </div>
-        
-          <div class="home-area blue-home">
-            <div class="home-tokens" data-color="blue">
-              <div class="home-token" data-token="0"></div>
-              <div class="home-token" data-token="1"></div>
-              <div class="home-token" data-token="2"></div>
-              <div class="home-token" data-token="3"></div>
+
+            <!-- Center Area -->
+            <div class="center-area">
+                <div class="center-triangle red-triangle"></div>
+                <div class="center-triangle green-triangle"></div>
+                <div class="center-triangle yellow-triangle"></div>
+                <div class="center-triangle blue-triangle"></div>
             </div>
-          </div>
-        
-          <div class="path-container" id="pathContainer"></div>
-        
-          <div class="center-area">
-            <div class="victory-triangle red-victory"></div>
-            <div class="victory-triangle green-victory"></div>
-            <div class="victory-triangle yellow-victory"></div>
-            <div class="victory-triangle blue-victory"></div>
-          </div>
+
+            <!-- Path cells will be dynamically created by createPathCells() -->
         </div>
 
+        <!-- Game Controls -->
         <div class="game-controls">
-          <div class="dice-container">
-            <div id="diceDisplay" class="dice">🎲</div>
-            <button id="rollDice" class="btn-roll" disabled>Roll Dice</button>
-          </div>
-          <div class="players-info" id="playersInfo"></div>
+            <div class="turn-info">
+                <h3>Current Turn</h3>
+                <div id="currentTurnDisplay" class="current-turn">
+                    <span id="currentPlayerName">Waiting...</span>
+                </div>
+            </div>
+
+            <div class="dice-section">
+                <div id="diceDisplay" class="dice-display">🎲</div>
+                <button id="rollDiceBtn" onclick="rollDice()" disabled>Roll Dice</button>
+            </div>
+
+            <div class="players-info">
+                <h3>Players</h3>
+                <div id="playersInfoList">
+                    <!-- Player info cards will be rendered here -->
+                </div>
+            </div>
         </div>
-      </div>
     </div>
 
-    <!-- SCREEN 4: WINNER SCREEN -->
+    <!-- Winner Screen -->
     <div id="winnerScreen" class="screen">
-      <h1>🏆 Game Over!</h1>
-      <div id="winnerInfo"></div>
-      <button id="newGame" class="btn-primary">New Game</button>
+        <div class="winner-container">
+            <h1>🏆 Winner!</h1>
+            <div id="winnerAvatar" class="winner-avatar"></div>
+            <h2 id="winnerName">Player Name</h2>
+            <p id="winnerColor">Color</p>
+            <button onclick="location.reload()">🔄 New Game</button>
+        </div>
     </div>
-  </div>
 
-  <!-- PeerJS library -->
-  <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+    <!-- Load PeerJS Library -->
+    <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
 
-  <!-- Main game module -->
-  <script type="module" src="js/main.js"></script>
-
-  <!-- Debug helper -->
-  <script>
-    window.addEventListener('load', () => {
-      console.log("🎮 HTML LOADED");
-      console.log("📍 Elements check:");
-      console.log("  - Roll Dice:", document.getElementById("rollDice") ? "✅" : "❌");
-      console.log("  - Current Turn:", document.getElementById("currentTurn") ? "✅" : "❌");
-      console.log("  - Dice Display:", document.getElementById("diceDisplay") ? "✅" : "❌");
-    });
-
-    window.addEventListener('error', (e) => {
-      console.error("❌ ERROR:", e.message, "at", e.filename + ":" + e.lineno);
-    });
-
-    window.addEventListener('unhandledrejection', (e) => {
-      console.error("❌ PROMISE REJECTION:", e.reason);
-    });
-  </script>
+    <!-- Load Game Scripts in Dependency Order -->
+    <script src="js/config.js"></script>
+    <script src="js/state.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/rendering.js"></script>
+    <script src="js/gameLogic.js"></script>
+    <script src="js/network.js"></script>
+    <script src="js/messageHandler.js"></script>
+    <script src="js/admin.js"></script>
+    <script src="js/player.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/main.js"></script>
 </body>
 </html>
