@@ -891,4 +891,263 @@ Wait for game start        Wait for game start        Wait for game start
     Board Layout (Percentage-based positioning):
     
          0%                    50%                   100%
+    0%   ┌──────────────────────┬──────────────────────┐
+         │                      │                      │
+         │    YELLOW HOME       │    YELLOW HOME       │
+         │      AREA            │      AREA            │
+         │                      │                      │
+         │         ┌────────────┼────────────┐         │
+         │         │  13  14  15│16  17  18  │         │
+         │         │            │            │         │
+    25%  │         │  12        │        19  │         │
+         │         │            │            │         │
+         │         │  11        │        20  │         │
+         │         │            │            │         │
+         ├─────────┼────────────┼────────────┼─────────┤
+         │  10  9  8  7  6  5   │   ▲HOME▲  │ 21 22 23│
+         │                      │  STRETCH  │         │
+    40%  │◄─RED START (0-4)─────┤   CENTER  ├─────────┤
+         │                      │  ◄►◄►◄►◄► │         │
+    50%  │                      │           │         │
+         │ 50 49 48 47 46 45    │   ▼HOME▼  │ 24 25 26│
+         ├─────────┼────────────┼────────────┼─────────┤
+         │         │  51        │        27  │         │
+         │         │            │            │         │
+    60%  │         │   0        │        28  │         │
+         │         │            │            │         │
+         │         │  ▲1   2  3 │ 4  29  30  │         │
+         │         └────────────┼────────────┘         │
+         │                      │                      │
+    75%  │    BLUE HOME         │    GREEN HOME        │
+         │      AREA            │      AREA            │
+         │                      │                      │
+   100%  └──────────────────────┴──────────────────────┘
+
+    Path Position Mapping:
+    ┌──────────────────────────────────────────────────────┐
+    │ Position  │ Location      │ Color Start │ Special  │
+    ├───────────┼───────────────┼─────────────┼──────────┤
+    │    0      │ Left-Mid      │ RED START   │ SAFE     │
+    │    5      │ Left-Top Turn │             │ SAFE+STAR│
+    │   13      │ Top-Mid       │ YELLOW START│ SAFE     │
+    │   19      │ Top-Right Turn│             │ SAFE+STAR│
+    │   26      │ Right-Mid     │ GREEN START │ SAFE     │
+    │   32      │ Right-Bot Turn│             │ SAFE+STAR│
+    │   39      │ Bottom-Mid    │ BLUE START  │ SAFE     │
+    │   44      │ Bot-Left Turn │             │ SAFE+STAR│
+    │  0-51     │ Main Loop     │             │          │
+    └──────────────────────────────────────────────────────┘
+
+    Home Stretch Paths (Final 6 positions before center):
+    ┌──────────────────────────────────────────────────────┐
+    │ RED:    Horizontal (left to right) → Center          │
+    │ YELLOW: Vertical (top to bottom) → Center            │
+    │ GREEN:  Horizontal (right to left) → Center          │
+    │ BLUE:   Vertical (bottom to top) → Center            │
+    └──────────────────────────────────────────────────────┘
+
+    Home Stretch Entry Points:
+    ┌──────────────────────────────────────────────────────┐
+    │ RED:    Position 50 → Enter home stretch             │
+    │ YELLOW: Position 11 → Enter home stretch             │
+    │ GREEN:  Position 24 → Enter home stretch             │
+    │ BLUE:   Position 37 → Enter home stretch             │
+    │                                                      │
+    │ Formula: (START_POSITION + 50) % 52                  │
+    └──────────────────────────────────────────────────────┘
+
+
+┌───────────────────────────────────────────────────────────────────────────────┐
+│ 18. CSS CLASSES & STYLING LOGIC                                               │
+└───────────────────────────────────────────────────────────────────────────────┘
+
+    Path Cells:
+    ┌──────────────────────────────────────────────────────┐
+    │ .path-cell                - Base cell (4% x 4%)      │
+    │ .path-cell.safe           - Safe spot (border style) │
+    │ .path-cell.star           - Star spot (★ marker)     │
+    │ .path-cell.start-red      - Red start position       │
+    │ .path-cell.start-green    - Green start position     │
+    │ .path-cell.start-yellow   - Yellow start position    │
+    │ .path-cell.start-blue     - Blue start position      │
+    │ .path-cell.home-stretch-* - Colored home path        │
+    └──────────────────────────────────────────────────────┘
+
+    Tokens:
+    ┌──────────────────────────────────────────────────────┐
+    │ .token                    - Base token style         │
+    │ .token.red                - Red colored token        │
+    │ .token.green              - Green colored token      │
+    │ .token.yellow             - Yellow colored token     │
+    │ .token.blue               - Blue colored token       │
+    │ .token.selectable         - Clickable (pulsing)      │
+    └──────────────────────────────────────────────────────┘
+
+    Home Area:
+    ┌──────────────────────────────────────────────────────┐
+    │ .home-area                - Corner home zones        │
+    │ .home-tokens              - Token container          │
+    │ .home-token               - Individual slot          │
+    │ .home-token.has-token     - Slot occupied            │
+    └──────────────────────────────────────────────────────┘
+
+    Screens:
+    ┌──────────────────────────────────────────────────────┐
+    │ .screen                   - Base screen (hidden)     │
+    │ .screen.active            - Visible screen           │
+    │ #adminLogin               - Password entry           │
+    │ #playerSetupSection       - Admin slot setup         │
+    │ #playerSelect             - Player slot selection    │
+    │ #gameScreen               - Main game board          │
+    │ #winnerScreen             - Victory display          │
+    └──────────────────────────────────────────────────────┘
+
+
+┌───────────────────────────────────────────────────────────────────────────────┐
+│ 19. ANIMATION & VISUAL FEEDBACK                                               │
+└───────────────────────────────────────────────────────────────────────────────┘
+
+    Dice Roll Animation:
+    ┌──────────────────────────────────────────────────────┐
+    │ 1. User clicks "Roll Dice"                           │
+    │ 2. Button disabled                                   │
+    │ 3. Dice emoji rotates (CSS animation)                │
+    │ 4. Display result after 0.5s                         │
+    │ 5. Highlight selectable tokens (pulse effect)        │
+    └──────────────────────────────────────────────────────┘
+
+    Token Movement:
+    ┌──────────────────────────────────────────────────────┐
+    │ 1. Token highlighted (selectable class)              │
+    │ 2. User clicks token                                 │
+    │ 3. Token moves to new position (instant)             │
+    │ 4. Board re-renders all tokens                       │
+    │ 5. Captured tokens disappear from board              │
+    │ 6. Reappear in home area                             │
+    └──────────────────────────────────────────────────────┘
+
+    Turn Indicator:
+    ┌──────────────────────────────────────────────────────┐
+    │ • Current player name shown in their color           │
+    │ • Player info card highlighted (.active)             │
+    │ • Dice button enabled only for current player        │
+    │ • Other players see disabled state                   │
+    └──────────────────────────────────────────────────────┘
+
+    Token Stacking:
+    ┌──────────────────────────────────────────────────────┐
+    │ • Multiple tokens on same cell offset by 3px         │
+    │ • Z-index incremented for each stacked token         │
+    │ • Visual indication of multiple pieces               │
+    └──────────────────────────────────────────────────────┘
+
+
+┌───────────────────────────────────────────────────────────────────────────────┐
+│ 20. SECURITY & VALIDATION                                                     │
+└───────────────────────────────────────────────────────────────────────────────┘
+
+    Admin Protection:
+    ┌──────────────────────────────────────────────────────┐
+    │ • Password required (ADMIN_PASSWORD = "family2024")  │
+    │ • Only admin can start game                          │
+    │ • Only admin can modify player slots                 │
+    │ • Admin controls game state authority                │
+    └──────────────────────────────────────────────────────┘
+
+    Turn Validation:
+    ┌──────────────────────────────────────────────────────┐
+    │ • Check myPlayerIndex !== null                       │
+    │ • Verify gameState.currentTurn === myColor           │
+    │ • Validate token in selectableTokens[]               │
+    │ • Prevent actions when not your turn                 │
+    └──────────────────────────────────────────────────────┘
+
+    Movement Validation:
+    ┌──────────────────────────────────────────────────────┐
+    │ • Check token ownership (color match)                │
+    │ • Verify dice has been rolled                        │
+    │ • Validate destination not blocked by own token      │
+    │ • Check home stretch bounds (0-5)                    │
+    │ • Require exact roll to finish                       │
+    └──────────────────────────────────────────────────────┘
+
+    Network Validation:
+    ┌──────────────────────────────────────────────────────┐
+    │ • Check connection.open before sending               │
+    │ • Verify message type in handleMessage()             │
+    │ • Validate gameState structure                       │
+    │ • Handle disconnections gracefully                   │
+    └──────────────────────────────────────────────────────┘
+
+
+┌───────────────────────────────────────────────────────────────────────────────┐
+│ 21. OPTIMIZATION & PERFORMANCE                                                │
+└───────────────────────────────────────────────────────────────────────────────┘
+
+    Rendering Optimization:
+    ┌──────────────────────────────────────────────────────┐
+    │ • Path cells created once (createPathCells)          │
+    │ • Only tokens re-rendered on state change            │
+    │ • Remove all tokens, then redraw (simple strategy)   │
+    │ • CSS transforms for positioning (GPU accelerated)   │
+    └──────────────────────────────────────────────────────┘
+
+    Network Optimization:
+    ┌──────────────────────────────────────────────────────┐
+    │ • Broadcast only on state changes                    │
+    │ • Send minimal data (type + essential fields)        │
+    │ • Use PeerJS data channels (not media)               │
+    │ • STUN servers for NAT traversal                     │
+    └──────────────────────────────────────────────────────┘
+
+    Memory Management:
+    ┌──────────────────────────────────────────────────────┐
+    │ • Remove event listeners with cloneNode()            │
+    │ • Clean up closed connections from array             │
+    │ • Reuse gameState object (mutate in place)           │
+    │ • Avatar images as base64 (embedded in state)        │
+    └──────────────────────────────────────────────────────┘
+
+
+┌───────────────────────────────────────────────────────────────────────────────┐
+│ 22. DEBUGGING & TROUBLESHOOTING                                               │
+└───────────────────────────────────────────────────────────────────────────────┘
+
+    Common Issues:
+    ┌──────────────────────────────────────────────────────┐
+    │ Connection Failed:                                   │
+    │   • Check PeerJS server status (0.peerjs.com)        │
+    │   • Verify STUN servers accessible                   │
+    │   • Try refreshing both devices                      │
+    │   • Check firewall/network restrictions              │
+    │                                                      │
+    │ Dice Not Working:                                    │
+    │   • Verify myPlayerIndex is set                      │
+    │   • Check if it's your turn (currentTurn)            │
+    │   • Ensure gameStarted === true                      │
+    │   • Look for disabled button state                   │
+    │                                                      │
+    │ Tokens Not Moving:                                   │
+    │   • Check selectableTokens[] not empty               │
+    │   • Verify token has .selectable class               │
+    │   • Ensure click handler attached                    │
+    │   • Check for blocking validation errors             │
+    │                                                      │
+    │ State Desync:                                        │
+    │   • Admin broadcasts on every change                 │
+    │   • Players wait for broadcast before updating       │
+    │   • Check network messages in console                │
+    │   • Verify handleMessage() routing                   │
+    └──────────────────────────────────────────────────────┘
+
+    Console Logging Strategy:
+    ┌──────────────────────────────────────────────────────┐
+    │ • Log peer.on('open') with ID                        │
+    │ • Log each broadcast message type                    │
+    │ • Log handleMessage() received types                 │
+    │ • Log state changes (currentTurn, positions)         │
+    │ • Log validation failures (blocked, no moves)        │
+    └──────────────────────────────────────────────────────┘
+    
+         0%                    50%                   100%
     0%   ┌──────────────────────┬
