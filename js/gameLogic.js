@@ -70,7 +70,12 @@ export function rollDice() {
 }
 
 export function nextTurn() {
-    if (!state.isAdmin) return;  // Only admin changes turns
+    if (!state.isAdmin) {
+      console.log("⚠️ Not admin, cannot change turn");
+      return;
+    }
+    
+    console.log("🎲 NEXT TURN (Admin)");
     
     const currentIndex = state.gameState.players.findIndex(
       (p) => p.color === state.gameState.currentTurn
@@ -78,26 +83,27 @@ export function nextTurn() {
     const nextIndex = (currentIndex + 1) % state.gameState.players.length;
     state.gameState.currentTurn = state.gameState.players[nextIndex].color;
     
+    console.log("  From:", state.gameState.players[currentIndex].name);
+    console.log("  To:", state.gameState.players[nextIndex].name);
+    console.log("  Color:", state.gameState.currentTurn);
+    
     state.gameState.diceRoll = null;
     state.gameState.selectableTokens = [];
   
-    console.log(`Turn changed to: ${state.gameState.currentTurn}`);
-    
-    // THIS BROADCASTS TO ALL PLAYERS
+    console.log("📡 Broadcasting turn change...");
     broadcast({ type: "turnChanged", turn: state.gameState.currentTurn });
   
-    // Update admin's own UI
     updateTurnDisplay();
     updatePlayersInfo();
     clearSelectableTokens();
   
-    // Enable dice for admin if it's their turn
     if (state.myPlayerIndex !== null && state.gameState.players[state.myPlayerIndex]) {
       const myColor = state.gameState.players[state.myPlayerIndex].color;
       if (state.gameState.currentTurn === myColor) {
-        console.log("Enabling dice for admin's turn");
+        console.log("✅ Admin's turn - enabling dice");
         enableDiceRoll();
       } else {
+        console.log("❌ Not admin's turn - disabling dice");
         disableDiceRoll();
       }
     }
@@ -337,19 +343,23 @@ export function checkForWinner() {
 }
 
 export function enableDiceRoll() {
+    console.log("🎲 ENABLE DICE CALLED");
     const diceButton = document.getElementById("rollDice");
     if (diceButton) {
       diceButton.disabled = false;
-      console.log("Dice enabled"); // ← ADD THIS LOG
+      console.log("✅ Dice button enabled");
     } else {
-      console.error("Dice button not found!"); // ← ADD THIS TOO
+      console.error("❌ Dice button NOT FOUND!");
     }
   }
-
-export function disableDiceRoll() {
-  const diceButton = document.getElementById("rollDice");
-  if (diceButton) {
-    diceButton.disabled = true;
-    console.log("Dice disabled");
+  
+  export function disableDiceRoll() {
+    console.log("🚫 DISABLE DICE CALLED");
+    const diceButton = document.getElementById("rollDice");
+    if (diceButton) {
+      diceButton.disabled = true;
+      console.log("✅ Dice button disabled");
+    } else {
+      console.error("❌ Dice button NOT FOUND!");
+    }
   }
-}
