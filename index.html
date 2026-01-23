@@ -1,34 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Character encoding (supports symbols like 🎲) -->
   <meta charset="UTF-8" />
-
-  <!-- Makes the UI responsive on phones/tablets -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
   <title>Family Ludo</title>
-
-  <!-- All styling lives here (board layout, buttons, screens, etc.) -->
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 
 <body>
-  <!--
-    Main wrapper for the whole app.
-    We use "screens" (adminSetup / playerSelect / gameScreen / winnerScreen)
-    and show only one at a time by toggling CSS classes in JS.
-  -->
   <div class="container">
 
-    <!-- =========================================================
-         SCREEN 1: ADMIN SETUP (host creates game + shares link)
-         ========================================================= -->
+    <!-- SCREEN 1: ADMIN SETUP -->
     <div id="adminSetup" class="screen active">
       <h1>🎲 Family Ludo - Admin Setup</h1>
 
       <div class="admin-content">
-        <!-- Admin password gate -->
         <div class="password-section">
           <label>Admin Password:</label>
           <input
@@ -38,32 +24,22 @@
           />
         </div>
 
-        <!-- Hidden until correct password is entered -->
         <div id="playerSetupSection" class="hidden">
           <h3>Setup Players (2-4)</h3>
-
-          <!-- JS will render player "slots" here -->
           <div id="playersSetupList"></div>
-
-          <!-- Add one more player slot (max 4) -->
           <button id="addPlayer" class="btn-secondary">+ Add Player</button>
 
-          <!-- Share link area -->
           <div class="share-section" style="margin-top: 30px;">
             <h3>Game Link:</h3>
-
             <div class="share-box">
-              <!-- JS writes the generated link here -->
               <input type="text" id="shareLink" readonly />
               <button id="copyLink">📋 Copy</button>
             </div>
-
             <button id="whatsappShare" class="btn-whatsapp">
               Share on WhatsApp
             </button>
           </div>
 
-          <!-- Admin starts the game once 2–4 slots exist -->
           <button id="startGameAdmin" class="btn-primary" disabled>
             Start Game
           </button>
@@ -71,34 +47,23 @@
       </div>
     </div>
 
-    <!-- =========================================================
-         SCREEN 2: PLAYER SELECTION (players pick a slot)
-         ========================================================= -->
+    <!-- SCREEN 2: PLAYER SELECTION -->
     <div id="playerSelect" class="screen">
       <h1>🎲 Select Your Player</h1>
-
-      <!-- JS builds clickable cards here (available/taken) -->
       <div class="player-selection" id="playerSelection"></div>
-
-      <!-- Status text shown to player -->
       <p class="info">Waiting for admin to start game...</p>
     </div>
 
-    <!-- =========================================================
-         SCREEN 3: GAME SCREEN (board + dice + player info)
-         ========================================================= -->
+    <!-- SCREEN 3: GAME SCREEN -->
     <div id="gameScreen" class="screen">
-      <!-- Top status bar -->
       <div class="game-header">
         <div id="currentTurn" class="turn-indicator">Waiting...</div>
         <div id="gameInfo" class="game-code"></div>
       </div>
 
       <div class="game-container">
-        <!-- The actual board -->
         <div class="ludo-board" id="ludoBoard">
         
-          <!-- HOME AREAS in 4 corners -->
           <div class="home-area red-home">
             <div class="home-tokens" data-color="red">
               <div class="home-token" data-token="0"></div>
@@ -135,10 +100,8 @@
             </div>
           </div>
         
-          <!-- PATH CELLS: JS creates these -->
           <div class="path-container" id="pathContainer"></div>
         
-          <!-- Center trophy area -->
           <div class="center-area">
             <div class="victory-triangle red-victory"></div>
             <div class="victory-triangle green-victory"></div>
@@ -147,65 +110,46 @@
           </div>
         </div>
 
-        <!-- Right-side controls panel -->
         <div class="game-controls">
-          <!-- Dice UI -->
           <div class="dice-container">
             <div id="diceDisplay" class="dice">🎲</div>
             <button id="rollDice" class="btn-roll" disabled>Roll Dice</button>
           </div>
-
-          <!-- Player stats panel (JS fills this) -->
           <div class="players-info" id="playersInfo"></div>
         </div>
       </div>
     </div>
 
-    <!-- =========================================================
-         SCREEN 4: WINNER SCREEN
-         ========================================================= -->
+    <!-- SCREEN 4: WINNER SCREEN -->
     <div id="winnerScreen" class="screen">
       <h1>🏆 Game Over!</h1>
-
-      <!-- JS fills winner avatar/name here -->
       <div id="winnerInfo"></div>
-
       <button id="newGame" class="btn-primary">New Game</button>
     </div>
   </div>
 
-  <!-- PeerJS library (for peer-to-peer connections) -->
+  <!-- PeerJS library -->
   <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 
-  <!-- 
-    OPTION 1: Use modular JS files (ES6 modules)
-    Uncomment this if you want separate files
-  -->
-  <!-- <script type="module" src="js/main.js"></script> -->
+  <!-- Main game module -->
+  <script type="module" src="js/main.js"></script>
 
-  <!-- 
-    OPTION 2: Use single file (current approach)
-    Keep this if you want everything in one file
-  -->
-  <script src="script.js?v=3"></script>
-
-  <!-- Debug helper (temporary - remove in production) -->
+  <!-- Debug helper -->
   <script>
     window.addEventListener('load', () => {
-      console.log("🎮 Game Page Loaded");
-      console.log("📍 Roll Dice Button:", document.getElementById("rollDice"));
-      console.log("📍 Current Turn Display:", document.getElementById("currentTurn"));
-      console.log("📍 Dice Display:", document.getElementById("diceDisplay"));
+      console.log("🎮 HTML LOADED");
+      console.log("📍 Elements check:");
+      console.log("  - Roll Dice:", document.getElementById("rollDice") ? "✅" : "❌");
+      console.log("  - Current Turn:", document.getElementById("currentTurn") ? "✅" : "❌");
+      console.log("  - Dice Display:", document.getElementById("diceDisplay") ? "✅" : "❌");
     });
 
-    // Global error handler to catch any JS errors
     window.addEventListener('error', (e) => {
-      console.error("❌ Global Error:", e.message, e.filename, e.lineno);
+      console.error("❌ ERROR:", e.message, "at", e.filename + ":" + e.lineno);
     });
 
-    // Catch unhandled promise rejections
     window.addEventListener('unhandledrejection', (e) => {
-      console.error("❌ Unhandled Promise Rejection:", e.reason);
+      console.error("❌ PROMISE REJECTION:", e.reason);
     });
   </script>
 </body>
